@@ -360,6 +360,7 @@ void main() {
       className={`w-full h-full overflow-hidden absolute inset-0 ${className || ''}`}
       style={{
         pointerEvents: 'none',
+        opacity: 0.1,
         ...(mixBlendMode && {
           mixBlendMode: mixBlendMode as any
         })
