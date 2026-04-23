@@ -45,6 +45,18 @@ const fadeUp = {
   transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
 };
 
+const sponsors = [
+  { name: 'Microsoft', src: '/sponsors/microsoft.png', accent: 'from-[#56ccf2] to-[#2f80ed]' },
+  { name: 'Google', src: '/sponsors/google.svg', accent: 'from-[#f2994a] to-[#eb5757]' },
+  { name: 'GitHub', src: '/sponsors/github.png', accent: 'from-[#111827] to-[#374151]' },
+  { name: 'Cloudinary', src: '/sponsors/cloudinary.png', accent: 'from-[#667eea] to-[#764ba2]' },
+  { name: 'Tailscale', src: '/sponsors/tailscale.png', accent: 'from-[#00b4d8] to-[#0077b6]' },
+  { name: 'Warp', src: '/sponsors/warp.png', accent: 'from-[#ef5da8] to-[#7b61ff]' },
+  { name: 'Stan', src: '/sponsors/stan.png', accent: 'from-[#f9c74f] to-[#f9844a]' },
+  { name: 'Backboard', src: '/sponsors/backboard.svg', accent: 'from-[#0ea5e9] to-[#14b8a6]' },
+  { name: 'Reactiv', src: '/sponsors/reactiv.png', accent: 'from-[#22c55e] to-[#16a34a]' },
+];
+
 export default function Home() {
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
@@ -257,6 +269,74 @@ __--__--__--__
             </motion.div>
           </div>
         </section>
+
+        <motion.section
+          {...fadeUp}
+          transition={{ ...fadeUp.transition, delay: 0.1 }}
+          className="mx-auto mt-24 max-w-7xl overflow-hidden rounded-[2.3rem] border border-black/10 bg-[#141f31] p-8 text-white shadow-[0_40px_80px_-50px_rgba(8,12,20,0.9)] sm:p-10 lg:mt-32 lg:p-14"
+        >
+          <div
+            className="pointer-events-none absolute inset-0 opacity-75"
+            style={{
+              backgroundImage:
+                'radial-gradient(circle at 14% 18%, rgba(61, 145, 255, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(150, 73, 244, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(39, 203, 143, 0.2), transparent 44%)',
+            }}
+          />
+          <div className="relative z-10">
+            <motion.p
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.15 }}
+              className="text-[11px] uppercase tracking-[0.36em] text-white/70"
+              style={{ fontFamily: 'var(--font-space-mono)' }}
+            >
+              sponsors
+            </motion.p>
+            <motion.h2
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.22 }}
+              className="mt-4 max-w-3xl text-3xl leading-tight tracking-tight sm:text-4xl lg:text-5xl"
+              style={{ fontFamily: 'var(--font-newsreader)' }}
+            >
+              Backed by teams shaping what builders use next.
+            </motion.h2>
+            <motion.div
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.3 }}
+              className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
+            >
+              {sponsors.map((sponsor, idx) => (
+                <motion.div
+                  key={sponsor.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.35 }}
+                  transition={{ duration: 0.55, delay: 0.07 * idx }}
+                  whileHover={{ y: -6, scale: 1.03 }}
+                  className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/4 p-4 backdrop-blur-sm"
+                >
+                  <div
+                    className={`absolute inset-0 bg-linear-to-br ${sponsor.accent} opacity-0 transition-opacity duration-300 group-hover:opacity-20`}
+                  />
+                  <div className="relative z-10 flex h-16 items-center justify-center rounded-xl bg-white/95 px-4">
+                    <Image
+                      src={sponsor.src}
+                      alt={`${sponsor.name} logo`}
+                      width={128}
+                      height={48}
+                      className="h-8 w-auto object-contain saturate-125 transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  <p
+                    className="relative z-10 mt-3 text-center text-[10px] uppercase tracking-[0.28em] text-white/70 transition-colors duration-300 group-hover:text-white"
+                    style={{ fontFamily: 'var(--font-space-mono)' }}
+                  >
+                    {sponsor.name}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </motion.section>
       </main>
     </div>
   );
