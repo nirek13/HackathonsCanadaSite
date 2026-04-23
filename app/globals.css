@@ -16,3 +16,38 @@ body {
   color: var(--foreground);
   font-family: var(--font-figtree), sans-serif;
 }
+
+::selection {
+  background: #7adceb;
+  color: #071421;
+}
+
+::-moz-selection {
+  background: #7adceb;
+  color: #071421;
+}
+
+html,
+body {
+  scrollbar-color: #968a6d #f4f2ef;
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f4f2ef;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #968a6d;
+  border-radius: 999px;
+  border: 2px solid #f4f2ef;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #968a6d;
+}

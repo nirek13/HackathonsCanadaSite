@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
+import { Instagram, Linkedin, Mail } from 'lucide-react';
 import { AsciiArt } from '@/components/ui/ascii-art';
 import { SmoothCursor } from '@/registry/magicui/smooth-cursor';
 
@@ -38,6 +39,54 @@ const BUTTERFLY_ASCII = `
                              .%%%%:                                                                 
 `;
 
+const MAPLE_LEAF_ASCII = `
+                                             .                                              
+                                            =%#                                             
+                                           :% %=                                            
+                                          .%-  %-                                           
+                                         .%-   -%.                                          
+                                     *=. #*     :%..-+                                      
+                                     #++%*       +%+-%                                      
+                                     #=              %                                      
+                                     #-              %                                      
+                              -%*:   %-              %   .+%#                               
+                              .%.+%#=%.              %.*%*.#=                               
+                               %-   =%               #+.   %                                
+                              %%-                         :%%.                              
+                              :%                           #*                               
+    %%*=                       #+                         +%                       :*%#     
+     %+:*%#+  :%*.              %-                       .%-              *%:  =#%#:.%.     
+     .%.   .=%%*.#%:   %+       =%                       %+       +%=  :#%:+%%+:   .%-      
+      -%.          *%*%--%#      %#                     =%      +%=:%=%*.          %*       
+       *%            -*   :%+    .%-                    %.    -%-   -=            **        
+        **                  %%    -%                   #+    *%                  =%         
+       *%%.                  =%.   **                 .%   .%*                  :%%#.       
+       *%:                     *%#=%                   #**%#                      %*        
+         %%                                                                     =%:         
+          *%:                                                                  %*           
+        .%%%.                                                                  #%%:         
+       =%%.                                                                     .%%+        
+          *%#.                                                                *%*           
+            .#%*.                                                          -%#.             
+               .*%#:                                                   :*%#.                
+                   .*#%:                                           .#%*:                    
+                    :*%*                                           +%#:                     
+               :-%%*=                                                 -*%%=:                
+        -+#%%*+=                                                           =+*%%%+-:        
+        .*%*:                                                                 .+%*:         
+           .+%#=.                        :%%# =%%=                        .=*%*.            
+               .=*%%*=-.                ##  % .% ##.               .-=+%%*=.                
+                      .-=+*%%%%*    :+%#:   %  %  .+%*:    =%%%%#+=-:                       
+                               %%%*=-.      %  %      --*%%%.                               
+                                            #- *=                                           
+                                            +* =#                                           
+                                            =# =#                                           
+                                            =# :%                                           
+                                            -# .%.                                          
+                                            .%. %.                                          
+                                             %##%.                                          
+`;
+
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
   whileInView: { opacity: 1, y: 0 },
@@ -45,21 +94,74 @@ const fadeUp = {
   transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const },
 };
 
+const MAGNETIC_WORDS = ['breaking', 'things'];
+const MAGNETIC_REPEL_RADIUS = 120;
+const MAGNETIC_REPEL_STRENGTH = 2100;
+const MAGNETIC_FRICTION = 0.64;
+const MAGNETIC_SPRING = 0.055;
+const MAGNETIC_LETTER_COUNT = MAGNETIC_WORDS.join('').length;
+
+function DiscordIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
+      <path d="M19.54 5.32a16.59 16.59 0 0 0-4.12-1.3.06.06 0 0 0-.06.03c-.18.33-.38.76-.52 1.1a15.42 15.42 0 0 0-5.67 0 11.42 11.42 0 0 0-.53-1.1.06.06 0 0 0-.06-.03 16.55 16.55 0 0 0-4.13 1.3.05.05 0 0 0-.02.02C1.8 9.17 1.1 12.92 1.43 16.63a.07.07 0 0 0 .03.05 16.75 16.75 0 0 0 5.07 2.56.06.06 0 0 0 .07-.02c.39-.53.75-1.1 1.06-1.69a.06.06 0 0 0-.03-.08 10.9 10.9 0 0 1-1.58-.75.06.06 0 0 1-.01-.1c.1-.08.2-.16.29-.24a.06.06 0 0 1 .06-.01c3.3 1.5 6.87 1.5 10.13 0a.06.06 0 0 1 .07 0c.09.08.19.16.29.24a.06.06 0 0 1-.01.1c-.5.29-1.03.54-1.58.75a.06.06 0 0 0-.03.08c.32.59.67 1.16 1.06 1.69a.06.06 0 0 0 .07.02 16.69 16.69 0 0 0 5.07-2.56.06.06 0 0 0 .03-.05c.39-4.28-.66-8-2.99-11.29a.04.04 0 0 0-.02-.02ZM8.68 14.38c-.99 0-1.8-.91-1.8-2.02 0-1.11.79-2.01 1.8-2.01 1 0 1.82.9 1.8 2.01 0 1.11-.8 2.02-1.8 2.02Zm6.64 0c-.99 0-1.8-.91-1.8-2.02 0-1.11.79-2.01 1.8-2.01 1 0 1.82.9 1.8 2.01 0 1.11-.8 2.02-1.8 2.02Z" />
+    </svg>
+  );
+}
+
 const sponsors = [
   { name: 'Microsoft', src: '/sponsors/microsoft.png', accent: 'from-[#56ccf2] to-[#2f80ed]' },
   { name: 'Google', src: '/sponsors/google.svg', accent: 'from-[#f2994a] to-[#eb5757]' },
-  { name: 'GitHub', src: '/sponsors/github.png', accent: 'from-[#111827] to-[#374151]' },
+  { name: 'GitHub', src: '/sponsors/github.png', accent: 'from-[#c2c2c2] to-[#bfc5d9]' },
+  { name: 'Perplexity', src: '/sponsors/perplexity.png', accent: 'from-[#c2c2c2] to-[#bfc5d9]' },
   { name: 'Cloudinary', src: '/sponsors/cloudinary.png', accent: 'from-[#667eea] to-[#764ba2]' },
-  { name: 'Tailscale', src: '/sponsors/tailscale.png', accent: 'from-[#00b4d8] to-[#0077b6]' },
-  { name: 'Warp', src: '/sponsors/warp.png', accent: 'from-[#ef5da8] to-[#7b61ff]' },
-  { name: 'Stan', src: '/sponsors/stan.png', accent: 'from-[#f9c74f] to-[#f9844a]' },
+  { name: 'Tailscale', src: '/sponsors/tailscale.png', accent: 'from-[#c2c2c2] to-[#bfc5d9]' },
+  { name: 'Warp', src: '/sponsors/warp.png', accent: 'from-[#b496ff] to-[#96ffb5]' },
+  { name: 'Stan', src: '/sponsors/stan.png', accent: 'from-[#8657ff] to-[#b496ff]' },
   { name: 'Backboard', src: '/sponsors/backboard.svg', accent: 'from-[#0ea5e9] to-[#14b8a6]' },
   { name: 'Reactiv', src: '/sponsors/reactiv.png', accent: 'from-[#22c55e] to-[#16a34a]' },
 ];
 
+const pastEvents = [
+  {
+    name: 'Hack Canada 2025',
+    logo: '/events/hc25.png',
+    photos: ['/events/hc25_event.JPG', '/events/hc25_event2.jpg'],
+    city: 'Waterloo, ON',
+    highlight: 'Our flagship launch year.',
+    url: 'https://2025.hackcanada.org/',
+  },
+  {
+    name: 'Hack Canada 2026',
+    logo: '/events/hc26.png',
+    photos: ['/events/hc26_event.jpg'],
+    city: 'Waterloo, ON',
+    highlight: 'Got even bigger.',
+    url: 'https://hackcanada.org/',
+  },
+  {
+    name: 'Stan',
+    logo: '/events/stan.png',
+    photos: ['/events/stan_event.jpg'],
+    city: 'Toronto, ON',
+    highlight: 'A focused builder showcase.',
+    url: 'https://hackai.ca/',
+  },
+];
+
 export default function Home() {
   const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [eventPhotoIndexes, setEventPhotoIndexes] = useState<number[]>(() =>
+    pastEvents.map(() => 0),
+  );
   const heroRef = useRef<HTMLElement | null>(null);
+  const conclusionMagnetRef = useRef<HTMLSpanElement | null>(null);
+  const magneticLetterRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const magneticStateRef = useRef(
+    Array.from({ length: MAGNETIC_LETTER_COUNT }, () => ({ x: 0, y: 0, vx: 0, vy: 0 })),
+  );
+  const magneticMouseRef = useRef({ x: -9999, y: -9999 });
+  const magneticRafRef = useRef<number>(0);
   const cards = [
     { src: '/pic1.JPG', rotate: -9, top: '6%', left: '56%' },
     { src: '/pic2.JPG', rotate: 8, top: '14%', left: '72%' },
@@ -68,44 +170,67 @@ export default function Home() {
     { src: '/pic5.JPG', rotate: -3, top: '30%', left: '85%' },
   ];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setEventPhotoIndexes((prev) =>
+        prev.map((idx, eventIdx) => {
+          const photoCount = pastEvents[eventIdx].photos.length;
+          return (idx + 1) % photoCount;
+        }),
+      );
+    }, 3500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const loop = () => {
+      const wrap = conclusionMagnetRef.current;
+      if (!wrap) {
+        magneticRafRef.current = requestAnimationFrame(loop);
+        return;
+      }
+      const wrapRect = wrap.getBoundingClientRect();
+      const { x: mx, y: my } = magneticMouseRef.current;
+
+      magneticStateRef.current.forEach((s, i) => {
+        const el = magneticLetterRefs.current[i];
+        if (!el) return;
+
+        const r = el.getBoundingClientRect();
+        const ox = r.left - wrapRect.left + r.width / 2;
+        const oy = r.top - wrapRect.top + r.height / 2;
+
+        const dx = ox + s.x - mx;
+        const dy = oy + s.y - my;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < MAGNETIC_REPEL_RADIUS && dist > 0) {
+          const force = (MAGNETIC_REPEL_RADIUS - dist) / MAGNETIC_REPEL_RADIUS;
+          s.vx += (dx / dist) * force * force * MAGNETIC_REPEL_STRENGTH * 0.016;
+          s.vy += (dy / dist) * force * force * MAGNETIC_REPEL_STRENGTH * 0.016;
+        }
+
+        s.vx += -s.x * MAGNETIC_SPRING;
+        s.vy += -s.y * MAGNETIC_SPRING;
+        s.vx *= MAGNETIC_FRICTION;
+        s.vy *= MAGNETIC_FRICTION;
+        s.x += s.vx;
+        s.y += s.vy;
+
+        el.style.transform = `translate(${s.x.toFixed(2)}px, ${s.y.toFixed(2)}px)`;
+      });
+
+      magneticRafRef.current = requestAnimationFrame(loop);
+    };
+
+    magneticRafRef.current = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(magneticRafRef.current);
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f4f2ef] text-[#171717]">
       <SmoothCursor />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-90"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 20% 12%, rgba(217, 214, 209, 0.65), transparent 46%), radial-gradient(circle at 82% 24%, rgba(200, 195, 188, 0.45), transparent 41%), radial-gradient(circle at 48% 80%, rgba(215, 210, 202, 0.35), transparent 55%)',
-        }}
-      />
-
-      <motion.pre
-        initial={{ opacity: 0, y: -24 }}
-        animate={{ opacity: 0.4, y: 0 }}
-        transition={{ duration: 1.4 }}
-        className="pointer-events-none absolute left-4 top-8 hidden whitespace-pre-wrap text-[10px] leading-4 tracking-[0.4em] text-black/45 md:block"
-        style={{ fontFamily: 'var(--font-space-mono)' }}
-      >
-        {`░░░   /\\_/\\    ░░░
-<>  {  o o }  <>
-____(   ^   )____
-\\\\\\\\      ////
-░░░░░░░░░░░░░░░░`}
-      </motion.pre>
-
-      <motion.pre
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 0.22, x: 0 }}
-        transition={{ duration: 1.2, delay: 0.25 }}
-        className="pointer-events-none absolute bottom-6 right-4 hidden whitespace-pre-wrap text-[10px] leading-4 tracking-[0.35em] text-black/45 lg:block"
-        style={{ fontFamily: 'var(--font-space-mono)' }}
-      >
-        {`//\\\\//\\\\//\\\\
-<>   []   <>
-__--__--__--__
-\\\\//\\\\//\\\\//`}
-      </motion.pre>
-
       <main className="relative z-10 px-6 pb-28 pt-16 sm:px-10 md:px-16 lg:px-24 lg:pt-20">
         <section ref={heroRef} className="relative mx-auto grid min-h-168 max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-16">
           <div>
@@ -152,14 +277,16 @@ __--__--__--__
                   view hackathons
                 </motion.span>
               </Link>
-              <motion.button
-                whileHover={{ y: -2, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="rounded-full border border-black/40 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.3em] text-black"
-                style={{ fontFamily: 'var(--font-space-mono)' }}
-              >
-                contact
-              </motion.button>
+              <Link href="mailto:hackathonscanada@gmail.com">
+                <motion.span
+                  whileHover={{ y: -2, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="inline-flex rounded-full border border-black/40 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.3em] text-black"
+                  style={{ fontFamily: 'var(--font-space-mono)' }}
+                >
+                  contact
+                </motion.span>
+              </Link>
             </motion.div>
           </div>
 
@@ -270,73 +397,319 @@ __--__--__--__
           </div>
         </section>
 
+        <div className="relative mx-auto mt-24 w-full max-w-7xl lg:mt-32">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-8 -bottom-20 -top-6 -z-10 blur-3xl"
+            style={{
+              backgroundImage:
+                'radial-gradient(50% 38% at 16% 72%, rgba(61, 145, 255, 0.32), transparent 72%), radial-gradient(44% 34% at 84% 66%, rgba(150, 73, 244, 0.28), transparent 74%), radial-gradient(56% 42% at 50% 94%, rgba(39, 203, 143, 0.2), transparent 78%)',
+            }}
+          />
+          <motion.section
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.1 }}
+            className="relative overflow-hidden rounded-[2.3rem] border border-black/10 bg-[#141f31] p-8 text-white shadow-[0_34px_72px_-42px_rgba(8,12,20,0.9)] sm:p-10 lg:p-14"
+          >
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-24"
+              style={{
+                opacity: 0.62,
+                backgroundImage:
+                  'radial-gradient(circle at 18% 22%, rgba(133, 239, 255, 0.34), rgba(61, 145, 255, 0.2) 28%, rgba(20, 31, 49, 0) 62%), radial-gradient(circle at 82% 18%, rgba(150, 73, 244, 0.22), rgba(20, 31, 49, 0) 55%), radial-gradient(circle at 52% 84%, rgba(39, 203, 143, 0.2), rgba(20, 31, 49, 0) 58%)',
+              }}
+            />
+            <div
+              className="pointer-events-none absolute -inset-12 -z-10 opacity-65 blur-3xl"
+              style={{
+                backgroundImage:
+                  'radial-gradient(circle at 14% 18%, rgba(61, 145, 255, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(150, 73, 244, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(39, 203, 143, 0.2), transparent 44%)',
+              }}
+            />
+            <div
+              className="pointer-events-none absolute inset-0 opacity-75"
+              style={{
+                backgroundImage:
+                  'radial-gradient(circle at 14% 18%, rgba(61, 145, 255, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(150, 73, 244, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(39, 203, 143, 0.2), transparent 44%)',
+              }}
+            />
+            <div className="relative z-10">
+              <motion.p
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.15 }}
+                className="text-[11px] uppercase tracking-[0.36em] text-white/70"
+                style={{ fontFamily: 'var(--font-space-mono)' }}
+              >
+                sponsors
+              </motion.p>
+              <motion.h2
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.22 }}
+                className="mt-4 max-w-3xl text-3xl leading-tight tracking-tight sm:text-4xl lg:text-5xl"
+                style={{ fontFamily: 'var(--font-newsreader)' }}
+              >
+                backed by teams shaping what builders use next.
+              </motion.h2>
+              <motion.div
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.3 }}
+                className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
+              >
+                {sponsors.map((sponsor, idx) => (
+                  <motion.div
+                    key={sponsor.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.35 }}
+                    transition={{ duration: 0.55, delay: 0.07 * idx }}
+                    whileHover={{ y: -6, scale: 1.03 }}
+                    className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/4 p-4 backdrop-blur-sm"
+                  >
+                    <div
+                      className={`absolute inset-0 bg-linear-to-br ${sponsor.accent} opacity-0 transition-opacity duration-300 group-hover:opacity-20`}
+                    />
+                    <div className="relative z-10 flex h-16 items-center justify-center rounded-xl bg-white px-4">
+                      <Image
+                        src={sponsor.src}
+                        alt={`${sponsor.name} logo`}
+                        width={100}
+                        height={100}
+                        className="h-8 w-auto object-contain saturate-125 transition-transform duration-300 group-hover:scale-105"
+                      />
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.section>
+        </div>
+
+        <motion.section
+          {...fadeUp}
+          transition={{ ...fadeUp.transition, delay: 0.12 }}
+          className="relative mx-auto mt-24 max-w-7xl lg:mt-32"
+        >
+          <div className="mb-10 flex items-end justify-between gap-6">
+            <div>
+              <p
+                className="text-[11px] uppercase tracking-[0.36em] text-black/60"
+                style={{ fontFamily: 'var(--font-space-mono)' }}
+              >
+                past events
+              </p>
+              <h2
+                className="mt-3 text-3xl leading-tight tracking-tight sm:text-4xl lg:text-5xl"
+                style={{ fontFamily: 'var(--font-newsreader)' }}
+              >
+                moments that shaped us.
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {pastEvents.map((event, idx) => (
+              <Link
+                key={event.name}
+                href={event.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <motion.article
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.6, delay: idx * 0.08 }}
+                  whileHover={{ y: -6 }}
+                  className={`relative h-full overflow-hidden rounded-3xl border border-black/15 bg-white shadow-[0_20px_45px_-30px_rgba(0,0,0,0.5)] ${
+                    idx === 1 ? 'md:-translate-y-8' : idx === 2 ? 'md:translate-y-6' : ''
+                  }`}
+                >
+                  <div className="relative aspect-4/3 overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`${event.name}-${eventPhotoIndexes[idx]}`}
+                        initial={{ opacity: 0, scale: 1.03, y: 8 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.985, y: -6 }}
+                        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute inset-0"
+                      >
+                        <Image
+                          src={event.photos[eventPhotoIndexes[idx]]}
+                          alt={`${event.name} event photo`}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          className="object-cover"
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="inline-flex rounded-full border border-white/35 bg-black/40 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+                        {event.city}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3 p-6">
+                    <div className="flex items-center gap-3">
+                      <Image
+                        src={event.logo}
+                        alt={`${event.name} logo`}
+                        width={36}
+                        height={36}
+                        className="h-9 w-9 object-contain"
+                      />
+                      <h3
+                        className="text-2xl leading-tight tracking-tight"
+                        style={{ fontFamily: 'var(--font-newsreader)' }}
+                      >
+                        {event.name}
+                      </h3>
+                    </div>
+                    <p
+                      className="text-[11px] uppercase tracking-[0.28em] text-black/55"
+                      style={{ fontFamily: 'var(--font-space-mono)' }}
+                    >
+                      {event.highlight}
+                    </p>
+                  </div>
+                </motion.article>
+              </Link>
+            ))}
+          </div>
+
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.2 }}
+            className="pointer-events-none absolute left-[72%] top-full -z-10 hidden w-180 -translate-x-[20%] -translate-y-10 scale-110 opacity-35 mix-blend-multiply lg:block"
+          >
+            <AsciiArt
+              text={MAPLE_LEAF_ASCII}
+              color="rgba(0, 0, 0, 0.42)"
+              animationStyle="fade"
+              animationDuration={1.2}
+              animateOnView={false}
+              glitchCharsPerFrame={95}
+              glitchFrameMs={90}
+              className="w-full"
+            />
+          </motion.div>
+        </motion.section>
+
         <motion.section
           {...fadeUp}
           transition={{ ...fadeUp.transition, delay: 0.1 }}
-          className="mx-auto mt-24 max-w-7xl overflow-hidden rounded-[2.3rem] border border-black/10 bg-[#141f31] p-8 text-white shadow-[0_40px_80px_-50px_rgba(8,12,20,0.9)] sm:p-10 lg:mt-32 lg:p-14"
+          className="mx-auto mt-28 max-w-7xl pt-18 lg:mt-36"
         >
-          <div
-            className="pointer-events-none absolute inset-0 opacity-75"
-            style={{
-              backgroundImage:
-                'radial-gradient(circle at 14% 18%, rgba(61, 145, 255, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(150, 73, 244, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(39, 203, 143, 0.2), transparent 44%)',
-            }}
-          />
-          <div className="relative z-10">
-            <motion.p
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.15 }}
-              className="text-[11px] uppercase tracking-[0.36em] text-white/70"
-              style={{ fontFamily: 'var(--font-space-mono)' }}
+          <h2
+            className="mt-5 max-w-5xl text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-[5.2rem]"
+            style={{ fontFamily: 'var(--font-newsreader)' }}
+          >
+            start{' '}
+            <span
+              ref={conclusionMagnetRef}
+              onMouseMove={(e) => {
+                const rect = conclusionMagnetRef.current?.getBoundingClientRect();
+                if (!rect) return;
+                magneticMouseRef.current = {
+                  x: e.clientX - rect.left,
+                  y: e.clientY - rect.top,
+                };
+              }}
+              onMouseLeave={() => {
+                magneticMouseRef.current = { x: -9999, y: -9999 };
+              }}
+              className="inline-flex gap-[0.22em] align-baseline"
             >
-              sponsors
-            </motion.p>
-            <motion.h2
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.22 }}
-              className="mt-4 max-w-3xl text-3xl leading-tight tracking-tight sm:text-4xl lg:text-5xl"
-              style={{ fontFamily: 'var(--font-newsreader)' }}
-            >
-              Backed by teams shaping what builders use next.
-            </motion.h2>
-            <motion.div
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.3 }}
-              className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
-            >
-              {sponsors.map((sponsor, idx) => (
-                <motion.div
-                  key={sponsor.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.35 }}
-                  transition={{ duration: 0.55, delay: 0.07 * idx }}
-                  whileHover={{ y: -6, scale: 1.03 }}
-                  className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/4 p-4 backdrop-blur-sm"
-                >
-                  <div
-                    className={`absolute inset-0 bg-linear-to-br ${sponsor.accent} opacity-0 transition-opacity duration-300 group-hover:opacity-20`}
-                  />
-                  <div className="relative z-10 flex h-16 items-center justify-center rounded-xl bg-white/95 px-4">
-                    <Image
-                      src={sponsor.src}
-                      alt={`${sponsor.name} logo`}
-                      width={128}
-                      height={48}
-                      className="h-8 w-auto object-contain saturate-125 transition-transform duration-300 group-hover:scale-105"
-                    />
-                  </div>
-                  <p
-                    className="relative z-10 mt-3 text-center text-[10px] uppercase tracking-[0.28em] text-white/70 transition-colors duration-300 group-hover:text-white"
-                    style={{ fontFamily: 'var(--font-space-mono)' }}
-                  >
-                    {sponsor.name}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
+              {(() => {
+                let letterIndex = 0;
+                return MAGNETIC_WORDS.map((word, wordIdx) => (
+                  <span key={word} className="inline-flex">
+                    {word.split('').map((letter) => {
+                      const idx = letterIndex++;
+                      return (
+                        <span
+                          key={`${word}-${idx}`}
+                          ref={(el) => {
+                            magneticLetterRefs.current[idx] = el;
+                          }}
+                          className="inline-block will-change-transform"
+                        >
+                          {letter}
+                        </span>
+                      );
+                    })}
+                    {wordIdx < MAGNETIC_WORDS.length - 1 ? <span>&nbsp;</span> : null}
+                  </span>
+                ));
+              })()}
+            </span>
+            <br />
+            with the right builders.
+          </h2>
+          <div className="mt-12">
+            <Link href="mailto:hackathonscanada@gmail.com">
+              <motion.span
+                whileHover={{ y: -2, scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex rounded-full border border-black/40 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.3em] text-black"
+                style={{ fontFamily: 'var(--font-space-mono)' }}
+              >
+                contact
+              </motion.span>
+            </Link>
           </div>
         </motion.section>
+
+        <footer className="mx-auto mt-20 max-w-7xl pt-6">
+          <div className="mb-6 flex items-center gap-3">
+            <Link
+              href="https://discord.com/invite/wp42amwcWy"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Join us on Discord"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            >
+              <DiscordIcon className="h-4.5 w-4.5" />
+            </Link>
+            <Link
+              href="https://www.linkedin.com/company/hackathonsna/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on LinkedIn"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            >
+              <Linkedin className="h-4.5 w-4.5" />
+            </Link>
+            <Link
+              href="https://www.instagram.com/hackathoncanada/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Instagram"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            >
+              <Instagram className="h-4.5 w-4.5" />
+            </Link>
+            <Link
+              href="mailto:hackathonscanada@gmail.com"
+              aria-label="Email Hackathons Canada"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            >
+              <Mail className="h-4.5 w-4.5" />
+            </Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <Image src="/favicon.ico" alt="Hackathons Canada logo" width={28} height={32} className="h-8 w-auto" />
+            <p
+              className="text-sm uppercase tracking-[0.28em] text-black/70 sm:text-base"
+              style={{ fontFamily: 'var(--font-space-mono)' }}
+            >
+              hackathons canada
+            </p>
+          </div>
+        </footer>
       </main>
     </div>
   );
