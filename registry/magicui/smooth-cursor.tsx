@@ -18,6 +18,8 @@ interface SpringConfig {
 export interface SmoothCursorProps {
   cursor?: ReactNode;
   springConfig?: SpringConfig;
+  /** When true, hides the custom cursor and restores the system cursor. */
+  useNativeCursor?: boolean;
 }
 
 const DESKTOP_POINTER_QUERY = '(any-hover: hover) and (any-pointer: fine)';
@@ -97,6 +99,7 @@ export function SmoothCursor({
     mass: 1,
     restDelta: 0.001,
   },
+  useNativeCursor = false,
 }: SmoothCursorProps) {
   const lastMousePos = useRef<Position>({ x: 0, y: 0 });
   const velocity = useRef<Position>({ x: 0, y: 0 });
@@ -212,7 +215,14 @@ export function SmoothCursor({
       });
     };
 
-    document.documentElement.classList.add(CURSOR_LOCK_CLASS);
+    const syncCursorLock = () => {
+      if (useNativeCursor) {
+        document.documentElement.classList.remove(CURSOR_LOCK_CLASS);
+      } else {
+        document.documentElement.classList.add(CURSOR_LOCK_CLASS);
+      }
+    };
+    syncCursorLock();
     window.addEventListener('pointermove', throttledPointerMove, {
       passive: true,
     });
@@ -225,7 +235,7 @@ export function SmoothCursor({
         clearTimeout(timeout);
       }
     };
-  }, [cursorX, cursorY, rotation, scale, isEnabled]);
+  }, [cursorX, cursorY, rotation, scale, isEnabled, useNativeCursor]);
 
   if (!isEnabled) {
     return null;
@@ -251,10 +261,10 @@ export function SmoothCursor({
           zIndex: 9999,
           pointerEvents: 'none',
           willChange: 'transform',
-          opacity: isVisible ? 1 : 0,
+          opacity: useNativeCursor ? 0 : isVisible ? 1 : 0,
         }}
         initial={false}
-        animate={{ opacity: isVisible ? 1 : 0 }}
+        animate={{ opacity: useNativeCursor ? 0 : isVisible ? 1 : 0 }}
         transition={{
           duration: 0.15,
         }}

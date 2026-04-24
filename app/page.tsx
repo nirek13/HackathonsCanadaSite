@@ -95,10 +95,10 @@ const fadeUp = {
 };
 
 const MAGNETIC_WORDS = ['breaking', 'things'];
-const MAGNETIC_REPEL_RADIUS = 120;
+const MAGNETIC_REPEL_RADIUS = 240;
 const MAGNETIC_REPEL_STRENGTH = 2100;
-const MAGNETIC_FRICTION = 0.64;
-const MAGNETIC_SPRING = 0.055;
+const MAGNETIC_FRICTION = 0.84;
+const MAGNETIC_SPRING = 0.025;
 const MAGNETIC_LETTER_COUNT = MAGNETIC_WORDS.join('').length;
 
 function DiscordIcon({ className }: { className?: string }) {
@@ -140,7 +140,7 @@ const pastEvents = [
     url: 'https://hackcanada.org/',
   },
   {
-    name: 'Stan',
+    name: 'Stan HackAI',
     logo: '/events/stan.png',
     photos: ['/events/stan_event.jpg'],
     city: 'Toronto, ON',
@@ -155,6 +155,8 @@ export default function Home() {
     pastEvents.map(() => 0),
   );
   const heroRef = useRef<HTMLElement | null>(null);
+  const heroCardDraggingRef = useRef(false);
+  const [heroNativeCursor, setHeroNativeCursor] = useState(false);
   const conclusionMagnetRef = useRef<HTMLSpanElement | null>(null);
   const magneticLetterRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const magneticStateRef = useRef(
@@ -230,7 +232,7 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#f4f2ef] text-[#171717]">
-      <SmoothCursor />
+      <SmoothCursor useNativeCursor={heroNativeCursor} />
       <main className="relative z-10 px-6 pb-28 pt-16 sm:px-10 md:px-16 lg:px-24 lg:pt-20">
         <section ref={heroRef} className="relative mx-auto grid min-h-168 max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-16">
           <div>
@@ -303,6 +305,7 @@ export default function Home() {
                 <motion.button
                   key={card.src}
                   type="button"
+                  data-hero-draggable
                   drag
                   dragMomentum
                   dragConstraints={heroRef}
@@ -317,8 +320,31 @@ export default function Home() {
                     scale: isActive ? 1.09 : 1,
                     zIndex: isActive ? 30 : idx + 1,
                   }}
+                  onPointerEnter={() => setHeroNativeCursor(true)}
+                  onPointerLeave={() => {
+                    if (!heroCardDraggingRef.current) setHeroNativeCursor(false);
+                  }}
+                  onDragStart={() => {
+                    heroCardDraggingRef.current = true;
+                    setHeroNativeCursor(true);
+                  }}
+                  onDragEnd={(e) => {
+                    heroCardDraggingRef.current = false;
+                    let x = 0;
+                    let y = 0;
+                    if ('changedTouches' in e && e.changedTouches[0]) {
+                      x = e.changedTouches[0].clientX;
+                      y = e.changedTouches[0].clientY;
+                    } else {
+                      const p = e as MouseEvent | PointerEvent;
+                      x = p.clientX;
+                      y = p.clientY;
+                    }
+                    const hit = document.elementFromPoint(x, y);
+                    setHeroNativeCursor(!!hit?.closest('[data-hero-draggable]'));
+                  }}
                   onClick={() => setActiveCard((prev) => (prev === idx ? null : idx))}
-                  className="pointer-events-auto absolute aspect-4/5 w-[clamp(9.5rem,14vw,13rem)] overflow-hidden rounded-2xl border border-black/15 bg-white/85 shadow-[0_18px_35px_-20px_rgba(0,0,0,0.7)]"
+                  className="pointer-events-auto absolute aspect-4/5 w-[clamp(9.5rem,14vw,13rem)] cursor-grab overflow-hidden rounded-2xl border border-black/15 bg-white/85 shadow-[0_18px_35px_-20px_rgba(0,0,0,0.7)] active:cursor-grabbing"
                   style={{
                     top: card.top,
                     left: card.left,
