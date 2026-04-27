@@ -236,13 +236,10 @@ export default function Home() {
       <main className="relative z-10 px-6 pb-28 pt-16 sm:px-10 md:px-16 lg:px-24 lg:pt-20">
         <section ref={heroRef} className="relative mx-auto grid min-h-168 max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-16">
           <div>
-            <motion.p
-              {...fadeUp}
-              className="text-xs uppercase tracking-[0.55em] text-black/55"
-              style={{ fontFamily: 'var(--font-space-mono)' }}
-            >
+          <Link href="" className="flex items-center gap-2 text-xs uppercase tracking-[0.45em] text-black/55" style={{ fontFamily: 'var(--font-space-mono)' }}>
+              <Image src="/favicon.ico" alt="Hackathons Canada logo" width={16} height={16} className="h-8 w-8" />
               hackathons canada
-            </motion.p>
+            </Link>
 
             <motion.h1
               {...fadeUp}
