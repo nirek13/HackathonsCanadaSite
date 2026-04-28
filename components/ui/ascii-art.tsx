@@ -18,6 +18,7 @@ type AsciiArtProps = {
   glitchCharsPerFrame?: number;
   glitchFrameMs?: number;
   className?: string;
+  invert?: boolean;
 };
 
 type AsciiArtFromImageProps = {
@@ -44,6 +45,7 @@ export function AsciiArt({
   glitchCharsPerFrame = 8,
   glitchFrameMs = 90,
   className,
+  invert = false,
 }: AsciiArtProps) {
   const [sourceText, setSourceText] = useState(text ?? '');
   const preRef = useRef<HTMLPreElement | null>(null);
@@ -103,7 +105,7 @@ export function AsciiArt({
         ctx.drawImage(loaded, 0, 0, width, height);
 
         const data = ctx.getImageData(0, 0, width, height).data;
-        const density = ' .:-=+*#%@';
+        const density = invert ? '@%#*+=-:. ' : ' .:-=+*#%@';
         const rows: string[] = [];
 
         for (let y = 0; y < height; y += 1) {
@@ -136,7 +138,7 @@ export function AsciiArt({
     return () => {
       isCancelled = true;
     };
-  }, [resolution, src, text]);
+  }, [resolution, src, text, invert]);
 
   useEffect(() => {
     if (preRef.current) {

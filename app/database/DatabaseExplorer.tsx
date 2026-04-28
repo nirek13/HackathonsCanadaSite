@@ -2,11 +2,12 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { Download, ExternalLink, MapPin, Search, SlidersHorizontal } from 'lucide-react';
 import type { HackathonRecord } from '@/lib/hackathons';
 import { AddCalendarDropdown } from '@/components/AddCalendarDropdown';
+import { AsciiArt } from "@/components/ui/ascii-art";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -100,6 +101,8 @@ function hasActiveFilters(query: string, dateFilter: DateFilter, formatFilter: F
   return query.trim().length > 0 || dateFilter !== 'all' || formatFilter !== 'all' || sourceFilter !== 'all';
 }
 
+const HACKATHONS_PAGE_SIZE = 8;
+
 interface DatabaseExplorerProps {
   events: HackathonRecord[];
   loadError: string | null;
@@ -110,6 +113,7 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
   const [dateFilter, setDateFilter] = useState<DateFilter>('all');
   const [formatFilter, setFormatFilter] = useState<FormatFilter>('all');
   const [sourceFilter, setSourceFilter] = useState<string>('all');
+  const [visibleCount, setVisibleCount] = useState(HACKATHONS_PAGE_SIZE);
 
   const sources = useMemo(() => {
     const unique = Array.from(new Set(events.map((event) => sourceLabel(event.source)))).sort((a, b) =>
@@ -139,24 +143,51 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
     });
   }, [events, query, dateFilter, formatFilter, sourceFilter]);
 
+  useEffect(() => {
+    setVisibleCount(HACKATHONS_PAGE_SIZE);
+  }, [query, dateFilter, formatFilter, sourceFilter]);
+
+  const visibleHackathons = useMemo(
+    () => filtered.slice(0, visibleCount),
+    [filtered, visibleCount],
+  );
+  const canSeeMore = visibleCount < filtered.length;
+
   return (
-    <div className="min-h-screen bg-[#f4f2ef] text-[#171717]">
+    <div className="min-h-screen bg-[#f4f2ef] text-[#171717] overflow-x-hidden">
       <main className="mx-auto max-w-7xl px-6 pb-20 pt-16 sm:px-10 md:px-16 lg:px-24 lg:pt-20">
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <Link href="/" className="flex items-center gap-2 text-xs uppercase tracking-[0.45em] text-black/55" style={{ fontFamily: 'var(--font-space-mono)' }}>
-              <Image src="/favicon.ico" alt="Hackathons Canada logo" width={16} height={16} className="h-8 w-8" />
-              hackathons canada
-            </Link>
-       
-            <h1
-              className="mt-5 text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl"
-              style={{ fontFamily: 'var(--font-newsreader)' }}
-            >
-              discover your next build weekend.
-            </h1>
-          </div>
+  <div className="relative w-full">
+    <div className="flex flex-col gap-2">
+      <Link
+        href="/"
+        className="flex items-center gap-2 text-xs uppercase tracking-[0.45em] text-black/55"
+        style={{ fontFamily: 'var(--font-space-mono)' }}
+      >
+        <Image src="/favicon.ico" alt="Hackathons Canada logo" width={16} height={16} className="h-8 w-8" />
+        hackathons canada
+      </Link>
+      <div className="relative flex items-end">
+        <h1
+          className="max-w-3xl text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl"
+          style={{ fontFamily: 'var(--font-newsreader)' }}
+        >
+          discover your next build weekend.
+        </h1>
+        <div className="absolute right-0 -translate-x-1/3 translate-y-1/3 pointer-events-none">
+          <AsciiArt
+            src="https://i.imgur.com/NviPNAY.jpeg"
+            resolution={100}
+            color="#000000"
+            animationStyle="none"
+            invert={true}
+            className="aspect-square w-40 sm:w-52 lg:w-64 bg-transparent opacity-40 mix-blend-multiply"
+          />
         </div>
+      </div>
+    </div>
+  </div>
+</div>
 
         <section className="mt-10 border border-black/10 bg-white/70 p-4 shadow-[0_24px_60px_-42px_rgba(0,0,0,0.6)] sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start">
@@ -299,8 +330,9 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
               )}
 
               {!loadError && filtered.length > 0 && (
-                <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                  {filtered.map((event, index) => (
+                <div className="mt-6 space-y-8">
+                  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    {visibleHackathons.map((event, index) => (
                     <article
                       key={event.event_key}
                       className={`group relative overflow-hidden border border-black/10 bg-linear-to-br ${eventToneClass(event, index)} ${cardFrameClass(index)} p-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.55)] transition hover:-translate-y-1.5`}
@@ -378,7 +410,20 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
                         </Link>
                       ) : null}
                     </article>
-                  ))}
+                    ))}
+                  </div>
+                  {canSeeMore ? (
+                    <div className="flex justify-center">
+                      <button
+                        type="button"
+                        onClick={() => setVisibleCount((c) => c + HACKATHONS_PAGE_SIZE)}
+                        className="border border-black/25 bg-white px-8 py-3 text-[10px] uppercase tracking-[0.28em] text-black/80 transition hover:border-black hover:bg-black hover:text-white"
+                        style={{ fontFamily: 'var(--font-space-mono)' }}
+                      >
+                        See more
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               )}
             </div>

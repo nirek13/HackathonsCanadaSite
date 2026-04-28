@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Figtree, Newsreader, Space_Mono, Zalando_Sans_Expanded } from "next/font/google";
+import { Figtree, Newsreader, Space_Mono } from "next/font/google";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -9,12 +9,6 @@ const figtree = Figtree({
   style: ["normal", "italic"],
 });
 
-const zalandoSansExpanded = Zalando_Sans_Expanded({
-  variable: "--font-zalando",
-  subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
-});
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
@@ -43,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${figtree.variable} ${zalandoSansExpanded.variable} ${newsreader.variable} ${spaceMono.variable} antialiased`}
+        className={`${figtree.variable} ${newsreader.variable} ${spaceMono.variable} antialiased`}
       >
         {children}
       </body>
