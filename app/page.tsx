@@ -126,7 +126,12 @@ const pastEvents = [
   {
     name: 'Hack Canada 2025',
     logo: '/events/hc25.png',
-    photos: ['/events/hc25_event.JPG', '/events/hc25_event2.jpg'],
+    photos: [
+      '/events/hc25_event.JPG',
+      '/events/hc25_event2.jpg',
+      '/events/hc25_event3.JPG',
+      '/events/hc25_event4.JPG',
+    ],
     city: 'Waterloo, ON',
     highlight: 'Our flagship launch year.',
     url: 'https://2025.hackcanada.org/',
@@ -134,7 +139,13 @@ const pastEvents = [
   {
     name: 'Hack Canada 2026',
     logo: '/events/hc26.png',
-    photos: ['/events/hc26_event.jpg'],
+    photos: [
+      '/events/hc26_event.jpg',
+      '/events/hc26_event2.jpg',
+      '/events/hc26_event3.jpg',
+      '/events/hc26_event4.jpg',
+      '/events/hc26_event5.JPG',
+    ],
     city: 'Waterloo, ON',
     highlight: 'Got even bigger.',
     url: 'https://hackcanada.org/',
@@ -142,7 +153,13 @@ const pastEvents = [
   {
     name: 'Stan HackAI',
     logo: '/events/stan.png',
-    photos: ['/events/stan_event.jpg'],
+    photos: [
+      '/events/stan_event.jpg',
+      '/events/stan_event2.JPG',
+      '/events/stan_event3.jpg',
+      '/events/stan_event4.jpg',
+      '/events/stan_event5.jpg',
+    ],
     city: 'Toronto, ON',
     highlight: 'A focused builder showcase.',
     url: 'https://hackai.ca/',
@@ -603,28 +620,13 @@ export default function Home() {
             ))}
           </div>
 
-          <motion.div
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: 0.2 }}
-            className="pointer-events-none absolute left-[72%] top-full -z-10 hidden w-180 -translate-x-[20%] -translate-y-10 scale-110 opacity-35 mix-blend-multiply lg:block"
-          >
-            <AsciiArt
-              text={MAPLE_LEAF_ASCII}
-              color="rgba(0, 0, 0, 0.42)"
-              animationStyle="fade"
-              animationDuration={1.2}
-              animateOnView={false}
-              glitchCharsPerFrame={95}
-              glitchFrameMs={90}
-              className="w-full"
-            />
-          </motion.div>
+
         </motion.section>
 
         <motion.section
           {...fadeUp}
           transition={{ ...fadeUp.transition, delay: 0.1 }}
-          className="mx-auto mt-28 max-w-7xl pt-18 lg:mt-36"
+          className="relative mx-auto mt-28 max-w-7xl pt-18 lg:mt-36"
         >
           <h2
             className="mt-5 max-w-5xl text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-[5.2rem]"
@@ -684,6 +686,23 @@ export default function Home() {
               </motion.span>
             </Link>
           </div>
+
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.2 }}
+            className="pointer-events-none mt-12 block w-full max-w-[320px] mx-auto opacity-25 mix-blend-multiply lg:absolute lg:left-[72%] lg:-top-32 lg:-z-10 lg:mt-0 lg:w-180 lg:-translate-x-[20%] lg:scale-110 lg:opacity-35 lg:block"
+          >
+            <AsciiArt
+              text={MAPLE_LEAF_ASCII}
+              color="rgba(0, 0, 0, 0.42)"
+              animationStyle="fade"
+              animationDuration={1.2}
+              animateOnView={false}
+              glitchCharsPerFrame={95}
+              glitchFrameMs={90}
+              className="w-full"
+            />
+          </motion.div>
         </motion.section>
 
         <footer className="mx-auto mt-20 max-w-7xl pt-6">
