@@ -272,11 +272,13 @@ export default function Home() {
             <motion.p
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.2 }}
-              className="mt-10 max-w-lg text-sm leading-relaxed text-black/60 sm:mt-14"
+              className="mt-10 max-w-lg text-sm uppercase leading-relaxed text-black/60 sm:mt-14"
               style={{ fontFamily: 'var(--font-space-mono)' }}
             >
-              Canada&apos;s home for hackathons — we organize flagship events, connect builders
-              with sponsors, and keep a living database of every hackathon worth showing up to.
+              A home for hackathons.
+              
+              We organize flagship events, connect builders
+              with sponsors, and keep a live database of every hackathon worth showing up to.
             </motion.p>
 
             <motion.div
@@ -493,7 +495,7 @@ export default function Home() {
               <motion.div
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.3 }}
-                className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
+                className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5"
               >
                 {sponsors.map((sponsor, idx) => (
                   <motion.div
@@ -503,7 +505,7 @@ export default function Home() {
                     viewport={{ once: true, amount: 0.35 }}
                     transition={{ duration: 0.55, delay: 0.07 * idx }}
                     whileHover={{ y: -6, scale: 1.03 }}
-                    className="flex h-16 items-center justify-center px-4"
+                    className="flex h-16 items-center bg-white rounded-xl justify-center px-4"
                   >
                     <Image
                       src={sponsor.src}
