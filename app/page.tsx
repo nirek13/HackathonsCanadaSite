@@ -110,16 +110,16 @@ function DiscordIcon({ className }: { className?: string }) {
 }
 
 const sponsors = [
-  { name: 'Microsoft', src: '/sponsors/microsoft.png', accent: 'from-[#56ccf2] to-[#2f80ed]' },
-  { name: 'Google', src: '/sponsors/google.svg', accent: 'from-[#f2994a] to-[#eb5757]' },
-  { name: 'GitHub', src: '/sponsors/github.png', accent: 'from-[#c2c2c2] to-[#bfc5d9]' },
-  { name: 'Perplexity', src: '/sponsors/perplexity.png', accent: 'from-[#c2c2c2] to-[#bfc5d9]' },
-  { name: 'Cloudinary', src: '/sponsors/cloudinary.png', accent: 'from-[#667eea] to-[#764ba2]' },
-  { name: 'Tailscale', src: '/sponsors/tailscale.png', accent: 'from-[#c2c2c2] to-[#bfc5d9]' },
-  { name: 'Warp', src: '/sponsors/warp.png', accent: 'from-[#b496ff] to-[#96ffb5]' },
-  { name: 'Stan', src: '/sponsors/stan.png', accent: 'from-[#8657ff] to-[#b496ff]' },
-  { name: 'Backboard', src: '/sponsors/backboard.svg', accent: 'from-[#0ea5e9] to-[#14b8a6]' },
-  { name: 'Reactiv', src: '/sponsors/reactiv.png', accent: 'from-[#22c55e] to-[#16a34a]' },
+  { name: 'Microsoft', src: '/sponsors/microsoft.png' },
+  { name: 'Google', src: '/sponsors/google.svg' },
+  { name: 'GitHub', src: '/sponsors/github.png' },
+  { name: 'Perplexity', src: '/sponsors/perplexity.png' },
+  { name: 'Cloudinary', src: '/sponsors/cloudinary.png' },
+  { name: 'Tailscale', src: '/sponsors/tailscale.png' },
+  { name: 'Warp', src: '/sponsors/warp.png' },
+  { name: 'Stan', src: '/sponsors/stan.png' },
+  { name: 'Backboard', src: '/sponsors/backboard.svg' },
+  { name: 'Reactiv', src: '/sponsors/reactiv.png' },
 ];
 
 const pastEvents = [
@@ -272,10 +272,11 @@ export default function Home() {
             <motion.p
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.2 }}
-              className="mt-10 max-w-md text-sm uppercase tracking-[0.42em] text-black/55 sm:mt-14"
+              className="mt-10 max-w-lg text-sm leading-relaxed text-black/60 sm:mt-14"
               style={{ fontFamily: 'var(--font-space-mono)' }}
             >
-              one network. many wild builds.
+              Canada&apos;s home for hackathons — we organize flagship events, connect builders
+              with sponsors, and keep a living database of every hackathon worth showing up to.
             </motion.p>
 
             <motion.div
@@ -379,24 +380,22 @@ export default function Home() {
           </motion.div>
         </section>
 
-        <section className="mx-auto mt-28 grid max-w-7xl gap-20 lg:mt-40 lg:grid-cols-[1fr_1fr] lg:gap-24">
-          <div className="relative min-h-80 lg:pt-10">
-            <motion.div
-              {...fadeUp}
-              className="pointer-events-none absolute -left-40 top-0 w-216 scale-125 lg:-left-56 lg:top-2 lg:scale-[1.4]"
-            >
-              <AsciiArt
-                text={BUTTERFLY_ASCII}
-                color="rgba(0, 0, 0, 0.6)"
-                animationStyle="fade"
-                animationDuration={1.5}
-                animateOnView={false}
-                glitchCharsPerFrame={100}
-                glitchFrameMs={90}
-                className="w-full"
-              />
-            </motion.div>
-          </div>
+        <section className="mx-auto mt-40 grid max-w-7xl items-center gap-16 lg:mt-56 lg:grid-cols-2 lg:gap-20">
+          <motion.div
+            {...fadeUp}
+            className="pointer-events-none flex items-center justify-center overflow-hidden lg:justify-end"
+          >
+            <AsciiArt
+              text={BUTTERFLY_ASCII}
+              color="rgba(0, 0, 0, 0.6)"
+              animationStyle="fade"
+              animationDuration={1.5}
+              animateOnView={false}
+              glitchCharsPerFrame={100}
+              glitchFrameMs={90}
+              className="w-full max-w-md scale-110 lg:max-w-lg lg:scale-125"
+            />
+          </motion.div>
 
           <div>
             <motion.p
@@ -437,7 +436,7 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="relative mx-auto mt-24 w-full max-w-7xl lg:mt-32">
+        <div className="relative mx-auto mt-40 w-full max-w-7xl lg:mt-56">
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-x-8 -bottom-20 -top-6 -z-10 blur-3xl"
@@ -504,20 +503,15 @@ export default function Home() {
                     viewport={{ once: true, amount: 0.35 }}
                     transition={{ duration: 0.55, delay: 0.07 * idx }}
                     whileHover={{ y: -6, scale: 1.03 }}
-                    className="group relative overflow-hidden rounded-2xl border border-white/20 bg-white/4 p-4 backdrop-blur-sm"
+                    className="flex h-16 items-center justify-center px-4"
                   >
-                    <div
-                      className={`absolute inset-0 bg-linear-to-br ${sponsor.accent} opacity-0 transition-opacity duration-300 group-hover:opacity-20`}
+                    <Image
+                      src={sponsor.src}
+                      alt={`${sponsor.name} logo`}
+                      width={100}
+                      height={100}
+                      className="h-8 w-auto object-contain transition-transform duration-300 hover:scale-105"
                     />
-                    <div className="relative z-10 flex h-16 items-center justify-center rounded-xl bg-white px-4">
-                      <Image
-                        src={sponsor.src}
-                        alt={`${sponsor.name} logo`}
-                        width={100}
-                        height={100}
-                        className="h-8 w-auto object-contain saturate-125 transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
                   </motion.div>
                 ))}
               </motion.div>
@@ -528,7 +522,7 @@ export default function Home() {
         <motion.section
           {...fadeUp}
           transition={{ ...fadeUp.transition, delay: 0.12 }}
-          className="relative mx-auto mt-24 max-w-7xl lg:mt-32"
+          className="relative mx-auto mt-40 max-w-7xl lg:mt-56"
         >
           <div className="mb-10 flex items-end justify-between gap-6">
             <div>
@@ -626,7 +620,7 @@ export default function Home() {
         <motion.section
           {...fadeUp}
           transition={{ ...fadeUp.transition, delay: 0.1 }}
-          className="relative mx-auto mt-28 max-w-7xl pt-18 lg:mt-36"
+          className="relative mx-auto mt-40 max-w-7xl pt-18 lg:mt-56"
         >
           <h2
             className="mt-5 max-w-5xl text-4xl leading-[1.05] tracking-tight sm:text-5xl lg:text-[5.2rem]"
@@ -705,7 +699,7 @@ export default function Home() {
           </motion.div>
         </motion.section>
 
-        <footer className="mx-auto mt-20 max-w-7xl pt-6">
+        <footer className="mx-auto mt-32 max-w-7xl pt-6 lg:mt-40">
           <div className="mb-6 flex items-center gap-3">
             <Link
               href="https://discord.com/invite/wp42amwcWy"
