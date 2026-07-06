@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, Download, MapPin, Search } from 'lucide-react';
+import { Download, ExternalLink, MapPin, Search, SlidersHorizontal } from 'lucide-react';
 import type { HackathonRecord } from '@/lib/hackathons';
 import { AddCalendarDropdown } from '@/components/AddCalendarDropdown';
 import { AsciiArt } from "@/components/ui/ascii-art";
@@ -67,17 +67,6 @@ function sourceLabel(source?: string): string {
   return source?.trim() || 'community';
 }
 
-function statusBadgeClass(state: Exclude<DateFilter, 'all'>): string {
-  switch (state) {
-    case 'upcoming':
-      return 'border-hna-green/30 bg-hna-green/15 text-hna-green';
-    case 'ongoing':
-      return 'border-hna-warmth/35 bg-hna-warmth/15 text-hna-warmth';
-    case 'past':
-      return 'border-hna-blue/20 bg-hna-blue/10 text-hna-blue/60';
-  }
-}
-
 function eventToneClass(event: HackathonRecord, index: number): string {
   const marker = `${event.name} ${sourceLabel(event.source)}`.toLowerCase();
   const brandTones: Array<{ key: string; tone: string }> = [
@@ -97,6 +86,15 @@ function eventToneClass(event: HackathonRecord, index: number): string {
     'from-[#edf2ea] via-[#f4ebd9] to-white',
   ];
   return defaultTones[index % defaultTones.length];
+}
+
+function cardFrameClass(index: number): string {
+  const variants = [
+    '[clip-path:polygon(0%_0%,95%_0%,100%_10%,100%_100%,7%_100%,0%_90%)]',
+    '[clip-path:polygon(4%_0%,100%_0%,100%_88%,96%_100%,0%_100%,0%_12%)]',
+    '[clip-path:polygon(0%_0%,93%_0%,100%_12%,100%_100%,0%_100%,0%_8%)]',
+  ];
+  return variants[index % variants.length];
 }
 
 function hasActiveFilters(query: string, dateFilter: DateFilter, formatFilter: FormatFilter, sourceFilter: string) {
@@ -308,26 +306,12 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
             )}
 
             <div>
-              <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-hna-blue/10 pb-6">
-                <div>
-                  <p
-                    className="text-[11px] uppercase tracking-[0.36em] text-hna-red"
-                    style={{ fontFamily: 'var(--font-space-mono)' }}
-                  >
-                    live database
-                  </p>
-                  <h2
-                    className="mt-2 text-3xl leading-tight tracking-tight sm:text-4xl"
-                    style={{ fontFamily: 'var(--font-newsreader)' }}
-                  >
-                    {filtered.length} hackathon{filtered.length === 1 ? '' : 's'}
-                  </h2>
-                </div>
+              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                 <p
-                  className="text-[10px] uppercase tracking-[0.22em] text-hna-blue/50"
+                  className="text-[11px] uppercase tracking-[0.3em] text-hna-red"
                   style={{ fontFamily: 'var(--font-space-mono)' }}
                 >
-                  {events.length} total in north america
+                  {filtered.length} of {events.length} hackathons
                 </p>
               </div>
 
@@ -346,98 +330,87 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
               )}
 
               {!loadError && filtered.length > 0 && (
-                <div className="mt-6 space-y-10">
-                  <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-                    {visibleHackathons.map((event, index) => {
-                      const dateState = getDateState(event);
-                      const formatState = getFormatState(event);
-
-                      return (
+                <div className="mt-6 space-y-8">
+                  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    {visibleHackathons.map((event, index) => (
                     <article
                       key={event.event_key}
-                      className="group relative flex flex-col overflow-hidden rounded-3xl border border-hna-blue/10 bg-white shadow-[0_18px_48px_-28px_rgba(29,42,68,0.4)] transition duration-300 hover:-translate-y-1.5 hover:border-hna-red/30 hover:shadow-[0_32px_64px_-24px_rgba(114,28,36,0.22)]"
+                      className={`group relative overflow-hidden border border-hna-blue/10 bg-linear-to-br ${eventToneClass(event, index)} ${cardFrameClass(index)} p-6 shadow-[0_20px_45px_-30px_rgba(29,42,68,0.55)] transition hover:-translate-y-1.5`}
                     >
-                      <div className="relative aspect-video overflow-hidden bg-hna-blue">
-                        {event.bgimage ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={event.bgimage}
-                            alt=""
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                          <div className={`h-full w-full bg-linear-to-br ${eventToneClass(event, index)}`} />
-                        )}
-                        <div className="absolute inset-0 bg-linear-to-t from-hna-blue/80 via-hna-blue/25 to-hna-blue/5" />
-                        <span
-                          className={`absolute left-4 top-4 rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.2em] backdrop-blur-sm ${statusBadgeClass(dateState)}`}
-                          style={{ fontFamily: 'var(--font-space-mono)' }}
-                        >
-                          {dateState}
-                        </span>
-                        <div className="absolute bottom-4 left-4 right-4 flex items-end gap-3">
+                      <div className="absolute -left-8 -top-8 h-20 w-20 rounded-full bg-white/45 blur-xl" />
+                      <div className="absolute -bottom-10 right-2 h-20 w-20 rounded-full bg-hna-blue/5 blur-xl" />
+                      <div className="absolute right-4 top-4 h-6 w-6 border-r-2 border-t-2 border-hna-blue/20" />
+                      <div className="relative flex flex-col gap-3">
+                        <div className="flex min-w-0 items-start gap-3">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={fallbackImage(event)}
                             alt={`${event.name} logo`}
-                            className="h-11 w-11 shrink-0 rounded-xl border border-white/25 bg-white/90 object-cover shadow-md"
+                            className="h-12 w-12 border border-hna-blue/10 bg-hna-neutral object-cover"
                           />
-                          <h2
-                            className="text-xl leading-tight tracking-tight text-white sm:text-2xl"
-                            style={{ fontFamily: 'var(--font-newsreader)' }}
-                          >
-                            {event.name}
-                          </h2>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-1 flex-col p-5">
-                        <p
-                          className="text-[11px] uppercase tracking-[0.24em] text-hna-red"
-                          style={{ fontFamily: 'var(--font-space-mono)' }}
-                        >
-                          {formatDateRange(event.startdate, event.enddate)}
-                        </p>
-
-                        <div className="mt-3 flex items-center gap-2 text-sm text-hna-blue/75">
-                          <MapPin className="h-4 w-4 shrink-0 text-hna-red/70" />
-                          <span className="truncate">{event.location || 'Location TBA'}</span>
-                        </div>
-
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          <span
-                            className="rounded-full bg-hna-neutral px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-hna-blue/70"
-                            style={{ fontFamily: 'var(--font-space-mono)' }}
-                          >
-                            {formatState}
-                          </span>
-                          <span
-                            className="rounded-full bg-hna-neutral px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-hna-blue/70"
-                            style={{ fontFamily: 'var(--font-space-mono)' }}
-                          >
-                            {sourceLabel(event.source)}
-                          </span>
-                        </div>
-
-                        <div className="mt-5 flex items-center justify-between gap-3 border-t border-hna-blue/8 pt-5">
-                          <AddCalendarDropdown event={event} />
-                          {event.url ? (
-                            <Link
-                              href={event.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 rounded-full bg-hna-blue px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-white transition group-hover:bg-hna-red"
+                          <div className="min-w-0">
+                            <h2
+                              className="text-2xl leading-tight tracking-tight wrap-break-word"
+                              style={{ fontFamily: 'var(--font-newsreader)' }}
+                            >
+                              {event.name}
+                            </h2>
+                            <p
+                              className="mt-1 text-[10px] uppercase tracking-[0.24em] text-hna-blue/55"
                               style={{ fontFamily: 'var(--font-space-mono)' }}
                             >
-                              visit
-                              <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
-                            </Link>
-                          ) : null}
+                              {sourceLabel(event.source)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="self-start">
+                          <AddCalendarDropdown event={event} />
                         </div>
                       </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <span
+                          className="border border-hna-blue/20 bg-white/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-hna-blue/70"
+                          style={{ fontFamily: 'var(--font-space-mono)' }}
+                        >
+                          {getDateState(event)}
+                        </span>
+                        <span
+                          className="border border-hna-blue/20 bg-white/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-hna-blue/70"
+                          style={{ fontFamily: 'var(--font-space-mono)' }}
+                        >
+                          {getFormatState(event)}
+                        </span>
+                      </div>
+
+                      <p
+                        className="mt-4 text-[11px] uppercase tracking-[0.24em] text-hna-blue/60"
+                        style={{ fontFamily: 'var(--font-space-mono)' }}
+                      >
+                        {formatDateRange(event.startdate, event.enddate)}
+                      </p>
+
+                      <div className="mt-2 flex items-center gap-2 text-sm text-hna-blue/75">
+                        <MapPin className="h-4 w-4 shrink-0" />
+                        <span className="truncate">{event.location || 'Location TBA'}</span>
+                      </div>
+
+                      <div className="mt-2 text-sm text-hna-blue/75">{event.hybridinfo || 'Format TBA'}</div>
+
+                      {event.url ? (
+                        <Link
+                          href={event.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-4 inline-flex items-center gap-1 border border-hna-blue/20 bg-white/75 px-4 py-2 text-[10px] uppercase tracking-[0.22em] transition hover:border-hna-blue"
+                          style={{ fontFamily: 'var(--font-space-mono)' }}
+                        >
+                          Visit Event
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        </Link>
+                      ) : null}
                     </article>
-                      );
-                    })}
+                    ))}
                   </div>
                   {canSeeMore ? (
                     <div className="flex justify-center">
