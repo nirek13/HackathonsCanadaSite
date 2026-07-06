@@ -457,9 +457,22 @@ export default function Home() {
         <motion.section
           {...fadeUp}
           transition={{ ...fadeUp.transition, delay: 0.12 }}
-          className="relative mx-auto mt-40 max-w-7xl lg:mt-56"
+          className="glass-surface relative mx-auto mt-40 max-w-7xl overflow-hidden rounded-[2.5rem] px-6 py-10 sm:px-8 sm:py-12 lg:mt-56 lg:px-12 lg:py-14"
         >
-          <div className="mb-10 flex items-end justify-between gap-6 border-b border-hna-blue/10 pb-6">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-hna-red/25 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-hna-blue/20 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/3 top-1/2 h-56 w-56 rounded-full bg-hna-warmth/20 blur-3xl"
+          />
+
+          <div className="relative mb-10 flex items-end justify-between gap-6 border-b border-white/35 pb-6">
             <div>
               <p
                 className="text-[11px] uppercase tracking-[0.36em] text-hna-red"
@@ -476,7 +489,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+          <div className="relative grid gap-8 md:grid-cols-2 xl:grid-cols-3">
             {pastEvents.map((event, idx) => (
               <Link
                 key={event.name}
@@ -490,15 +503,15 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.6, delay: idx * 0.08 }}
-                  className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-hna-blue/10 bg-white shadow-[0_18px_48px_-28px_rgba(29,42,68,0.4)] transition duration-300 hover:-translate-y-1.5 hover:border-hna-red/30 hover:shadow-[0_32px_64px_-24px_rgba(114,28,36,0.22)]"
+                  className="glass-surface relative flex h-full flex-col overflow-hidden rounded-[1.75rem] transition duration-500 hover:-translate-y-1 hover:border-white/70 hover:shadow-[0_24px_56px_-20px_rgba(114,28,36,0.25),inset_0_1px_0_rgba(255,255,255,0.85)]"
                 >
-                  <div className="relative aspect-video overflow-hidden bg-hna-blue">
+                  <div className="relative aspect-video overflow-hidden">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={`${event.name}-${eventPhotoIndexes[idx]}`}
-                        initial={{ opacity: 0, scale: 1.03 }}
+                        initial={{ opacity: 0, scale: 1.04 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.985 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                         className="absolute inset-0"
                       >
@@ -507,13 +520,13 @@ export default function Home() {
                           alt={`${event.name} event photo`}
                           fill
                           sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover transition duration-500 group-hover:scale-105"
+                          className="object-cover transition duration-700 group-hover:scale-105"
                         />
                       </motion.div>
                     </AnimatePresence>
-                    <div className="absolute inset-0 bg-linear-to-t from-hna-blue/80 via-hna-blue/25 to-hna-blue/5" />
+                    <div className="absolute inset-0 bg-linear-to-t from-hna-blue/75 via-hna-blue/20 to-white/10" />
                     <span
-                      className="absolute left-4 top-4 rounded-full border border-hna-blue/20 bg-hna-blue/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-hna-blue/70 backdrop-blur-sm"
+                      className="glass-chip absolute left-4 top-4 rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-hna-blue/80"
                       style={{ fontFamily: 'var(--font-space-mono)' }}
                     >
                       past
@@ -524,10 +537,10 @@ export default function Home() {
                         alt={`${event.name} logo`}
                         width={44}
                         height={44}
-                        className="h-11 w-11 shrink-0 rounded-xl border border-white/25 bg-white/90 object-contain p-1 shadow-md"
+                        className="h-11 w-11 shrink-0 rounded-xl border border-white/40 bg-white/50 object-contain p-1 shadow-sm backdrop-blur-md"
                       />
                       <h3
-                        className="text-xl leading-tight tracking-tight text-white sm:text-2xl"
+                        className="text-xl leading-tight tracking-tight text-white drop-shadow-sm sm:text-2xl"
                         style={{ fontFamily: 'var(--font-newsreader)' }}
                       >
                         {event.name}
@@ -535,7 +548,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="flex flex-1 flex-col p-5">
+                  <div className="flex flex-1 flex-col border-t border-white/35 bg-white/20 p-5 backdrop-blur-md">
                     <div className="flex items-center gap-2 text-sm text-hna-blue/75">
                       <MapPin className="h-4 w-4 shrink-0 text-hna-red/70" />
                       <span>{event.city}</span>
@@ -547,9 +560,9 @@ export default function Home() {
                       {event.highlight}
                     </p>
 
-                    <div className="mt-5 flex items-center justify-end border-t border-hna-blue/8 pt-5">
+                    <div className="mt-5 flex items-center justify-end border-t border-white/30 pt-5">
                       <span
-                        className="inline-flex items-center gap-1.5 rounded-full bg-hna-blue px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-white transition group-hover:bg-hna-red"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-white/40 bg-hna-blue/85 px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-white shadow-sm backdrop-blur-sm transition group-hover:border-white/60 group-hover:bg-hna-red/90"
                         style={{ fontFamily: 'var(--font-space-mono)' }}
                       >
                         visit
@@ -561,8 +574,6 @@ export default function Home() {
               </Link>
             ))}
           </div>
-
-
         </motion.section>
 
         <motion.section
