@@ -29,7 +29,7 @@ function toICSEvent(event: HackathonRecord, index: number): string | null {
 
   const lines = [
     'BEGIN:VEVENT',
-    `UID:${escapeICSText(event.event_key || `${event.name}-${index}`)}@hackathonscanada.org`,
+    `UID:${escapeICSText(event.event_key || `${event.name}-${index}`)}@hackathonsna.org`,
     `DTSTAMP:${stamp}`,
     `DTSTART;VALUE=DATE:${toICSDate(startDate)}`,
     `DTEND;VALUE=DATE:${toICSDate(endDateExclusive)}`,
@@ -49,7 +49,7 @@ function buildCalendar(events: HackathonRecord[]): string {
     .filter((entry): entry is string => Boolean(entry))
     .join('\r\n');
 
-  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Hackathons Canada//Hackathon Database//EN', 'CALSCALE:GREGORIAN', body, 'END:VCALENDAR'].join('\r\n');
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Hackathons North America//Hackathon Database//EN', 'CALSCALE:GREGORIAN', body, 'END:VCALENDAR'].join('\r\n');
 }
 
 export async function GET(request: NextRequest) {
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
   }
 
   const ics = buildCalendar(selected);
-  const filename = eventKey ? 'hackathon.ics' : 'hackathons-canada-all.ics';
+  const filename = eventKey ? 'hackathon.ics' : 'hackathons-north-america-all.ics';
 
   return new NextResponse(ics, {
     status: 200,

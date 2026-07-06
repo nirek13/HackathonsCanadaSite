@@ -7,8 +7,8 @@ import { DatabaseExplorer } from './DatabaseExplorer';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
-  title: 'Hackathons Canada Database',
-  description: 'Browse and filter hackathons in Canada.',
+  title: 'Hackathons North America Database',
+  description: 'Browse and filter hackathons across North America.',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon.ico',
@@ -46,7 +46,7 @@ export default async function DatabasePage() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Join us on Discord"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
           >
             <DiscordIcon className="h-4.5 w-4.5" />
           </Link>
@@ -55,7 +55,7 @@ export default async function DatabasePage() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow us on LinkedIn"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
           >
             <Linkedin className="h-4.5 w-4.5" />
           </Link>
@@ -64,25 +64,25 @@ export default async function DatabasePage() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Follow us on Instagram"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
           >
             <Instagram className="h-4.5 w-4.5" />
           </Link>
           <Link
             href="mailto:hackathonscanada@gmail.com"
-            aria-label="Email Hackathons Canada"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+            aria-label="Email Hackathons North America"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
           >
             <Mail className="h-4.5 w-4.5" />
           </Link>
         </div>
         <div className="flex items-center gap-3">
-          <Image src="/favicon.ico" alt="Hackathons Canada logo" width={28} height={32} className="h-8 w-auto" />
+          <Image src="/favicon.ico" alt="HNA logo" width={28} height={32} className="h-8 w-auto" />
           <p
-            className="text-sm uppercase tracking-[0.28em] text-black/70 sm:text-base"
+            className="text-sm uppercase tracking-[0.28em] text-hna-blue/70 sm:text-base"
             style={{ fontFamily: 'var(--font-space-mono)' }}
           >
-            hackathons canada
+            HNA
           </p>
         </div>
         </div>

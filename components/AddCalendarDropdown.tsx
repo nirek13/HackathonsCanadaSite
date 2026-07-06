@@ -56,7 +56,7 @@ export function AddCalendarDropdown({ event, align = 'right', className = '' }: 
     <div className={`relative inline-block ${className}`} ref={containerRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-black/20 bg-white px-4 text-[10px] uppercase tracking-[0.15em] text-black transition hover:border-black hover:bg-black hover:text-white"
+        className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-hna-red/30 bg-white px-4 text-[10px] uppercase tracking-[0.15em] text-hna-red transition hover:border-hna-red hover:bg-hna-red hover:text-white"
         style={{ fontFamily: 'var(--font-space-mono)' }}
       >
         <CalendarPlus className="h-4 w-4" />
@@ -70,7 +70,7 @@ export function AddCalendarDropdown({ event, align = 'right', className = '' }: 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.95 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`absolute z-50 mt-2 min-w-[200px] overflow-hidden rounded-2xl border border-black/10 bg-white p-1.5 shadow-[0_12px_35px_-12px_rgba(0,0,0,0.3)] ${
+            className={`absolute z-50 mt-2 min-w-[200px] overflow-hidden rounded-2xl border border-hna-blue/10 bg-white p-1.5 shadow-[0_12px_35px_-12px_rgba(29,42,68,0.3)] ${
               align === 'right' ? 'right-0' : 'left-0'
             }`}
           >
@@ -82,7 +82,7 @@ export function AddCalendarDropdown({ event, align = 'right', className = '' }: 
                   target={opt.external ? '_blank' : undefined}
                   rel={opt.external ? 'noopener noreferrer' : undefined}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center justify-between rounded-xl px-4 py-3 text-[11px] uppercase tracking-[0.1em] text-black/70 transition hover:bg-black/5 hover:text-black"
+                  className="flex items-center justify-between rounded-xl px-4 py-3 text-[11px] uppercase tracking-[0.1em] text-hna-blue/70 transition hover:bg-hna-blue/5 hover:text-hna-blue"
                   style={{ fontFamily: 'var(--font-space-mono)' }}
                 >
                   {opt.name}

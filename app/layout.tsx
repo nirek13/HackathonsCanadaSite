@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/ui/themes";
 import { Figtree, Newsreader, Space_Mono } from "next/font/google";
+import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -25,8 +28,8 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hackathons Canada",
-  description: "Hackathons Canada",
+  title: "Hackathons North America",
+  description: "Hackathons North America",
 };
 
 export default function RootLayout({
@@ -39,7 +42,15 @@ export default function RootLayout({
       <body
         className={`${figtree.variable} ${newsreader.variable} ${spaceMono.variable} antialiased`}
       >
-        {children}
+        <ClerkProvider
+          signInUrl="/sign-in"
+          signUpUrl="/sign-up"
+          afterSignOutUrl="/"
+          appearance={{ theme: shadcn }}
+        >
+          <Navbar />
+          {children}
+        </ClerkProvider>
       </body>
     </html>
   );

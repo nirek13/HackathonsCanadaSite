@@ -1,13 +1,31 @@
 @import "tailwindcss";
+@import "@clerk/ui/themes/shadcn.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
+  --hna-red: #721c24;
+  --hna-red-light: #c45a66;
+  --hna-blue: #1d2a44;
+  --hna-green: #2d4a22;
+  --hna-neutral: #f4ebd9;
+  --hna-warmth: #b3541e;
+  --hna-neutral-muted: #ebe0cc;
+  --hna-neutral-soft: #faf4ea;
+
+  --background: var(--hna-neutral);
+  --foreground: var(--hna-blue);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-hna-red: var(--hna-red);
+  --color-hna-red-light: var(--hna-red-light);
+  --color-hna-blue: var(--hna-blue);
+  --color-hna-green: var(--hna-green);
+  --color-hna-neutral: var(--hna-neutral);
+  --color-hna-warmth: var(--hna-warmth);
+  --color-hna-neutral-muted: var(--hna-neutral-muted);
+  --color-hna-neutral-soft: var(--hna-neutral-soft);
   --font-sans: var(--font-figtree);
 }
 
@@ -18,18 +36,18 @@ body {
 }
 
 ::selection {
-  background: #7adceb;
-  color: #071421;
+  background: color-mix(in srgb, var(--hna-red) 28%, var(--hna-neutral));
+  color: var(--hna-blue);
 }
 
 ::-moz-selection {
-  background: #7adceb;
-  color: #071421;
+  background: color-mix(in srgb, var(--hna-red) 28%, var(--hna-neutral));
+  color: var(--hna-blue);
 }
 
 html,
 body {
-  scrollbar-color: #968a6d #f4f2ef;
+  scrollbar-color: var(--hna-red) var(--hna-neutral);
   scrollbar-width: thin;
 }
 
@@ -39,15 +57,15 @@ body {
 }
 
 *::-webkit-scrollbar-track {
-  background: #f4f2ef;
+  background: var(--hna-neutral);
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #968a6d;
+  background: var(--hna-red);
   border-radius: 999px;
-  border: 2px solid #f4f2ef;
+  border: 2px solid var(--hna-neutral);
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: #968a6d;
+  background: color-mix(in srgb, var(--hna-red) 80%, black);
 }

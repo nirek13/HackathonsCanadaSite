@@ -4,9 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'motion/react';
-import { Instagram, Linkedin, Mail } from 'lucide-react';
+import { ArrowRight, Instagram, Linkedin, Mail, MapPin } from 'lucide-react';
 import { AsciiArt } from '@/components/ui/ascii-art';
-import { SmoothCursor } from '@/registry/magicui/smooth-cursor';
 
 const BUTTERFLY_ASCII = `
                                              %%%*                                                   
@@ -167,13 +166,9 @@ const pastEvents = [
 ];
 
 export default function Home() {
-  const [activeCard, setActiveCard] = useState<number | null>(null);
   const [eventPhotoIndexes, setEventPhotoIndexes] = useState<number[]>(() =>
     pastEvents.map(() => 0),
   );
-  const heroRef = useRef<HTMLElement | null>(null);
-  const heroCardDraggingRef = useRef(false);
-  const [heroNativeCursor, setHeroNativeCursor] = useState(false);
   const conclusionMagnetRef = useRef<HTMLSpanElement | null>(null);
   const magneticLetterRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const magneticStateRef = useRef(
@@ -181,13 +176,6 @@ export default function Home() {
   );
   const magneticMouseRef = useRef({ x: -9999, y: -9999 });
   const magneticRafRef = useRef<number>(0);
-  const cards = [
-    { src: '/pic1.JPG', rotate: -9, top: '6%', left: '56%' },
-    { src: '/pic2.JPG', rotate: 8, top: '14%', left: '72%' },
-    { src: '/pic3.JPG', rotate: -19, top: '40%', left: '59%' },
-    { src: '/pic4.JPG', rotate: 15, top: '48%', left: '76%' },
-    { src: '/pic5.JPG', rotate: -3, top: '30%', left: '85%' },
-  ];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -248,137 +236,82 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#f4f2ef] text-[#171717]">
-      <SmoothCursor useNativeCursor={heroNativeCursor} />
-      <main className="relative z-10 px-6 pb-28 pt-16 sm:px-10 md:px-16 lg:px-24 lg:pt-20">
-        <section ref={heroRef} className="relative mx-auto grid min-h-168 max-w-7xl gap-12 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-16">
-          <div>
-          <Link href="" className="flex items-center gap-2 text-xs uppercase tracking-[0.45em] text-black/55" style={{ fontFamily: 'var(--font-space-mono)' }}>
-              <Image src="/favicon.ico" alt="Hackathons Canada logo" width={16} height={16} className="h-8 w-8" />
-              hackathons canada
-            </Link>
+    <div className="relative min-h-screen overflow-x-hidden bg-hna-neutral text-hna-blue">
+      <main className="relative z-10 px-6 pb-28 pt-6 sm:px-10 md:px-16 lg:px-24 lg:pt-8">
+        <section className="relative lg:-mr-24 lg:min-h-[min(75vh,720px)]">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-0 top-16 h-72 w-72 rounded-full bg-hna-red/12 blur-3xl"
+          />
+          <div className="relative grid items-center gap-10 lg:grid-cols-[minmax(0,36rem)_1fr] lg:gap-8 xl:grid-cols-[minmax(0,40rem)_1fr]">
+            <div className="relative z-10 w-full max-w-2xl text-left lg:max-w-none">
+              <motion.h1
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.12 }}
+                className="max-w-2xl text-3xl leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:max-w-xl lg:text-[5.5rem] xl:max-w-2xl xl:text-[6rem]"
+                style={{ fontFamily: 'var(--font-newsreader)' }}
+              >
+                build strange.
+                <br />
+                launch <span className="text-hna-red">loud.</span>
+              </motion.h1>
 
-            <motion.h1
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.12 }}
-              className="mt-10 max-w-5xl text-3xl leading-[1.05] tracking-tight sm:text-5xl md:mt-16 md:text-6xl lg:text-[6rem]"
-              style={{ fontFamily: 'var(--font-newsreader)' }}
-            >
-              build strange.
-              <br />
-              launch loud.
-            </motion.h1>
+              <motion.p
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.2 }}
+                className="mt-10 max-w-xl text-sm uppercase leading-relaxed text-hna-blue/60 sm:mt-14 lg:max-w-md"
+                style={{ fontFamily: 'var(--font-space-mono)' }}
+              >
+                A home for hackathons.
+                
+                We organize flagship events, connect builders
+                with sponsors, and keep a live database of every hackathon worth showing up to.
+              </motion.p>
 
-            <motion.p
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.2 }}
-              className="mt-10 max-w-lg text-sm uppercase leading-relaxed text-black/60 sm:mt-14"
-              style={{ fontFamily: 'var(--font-space-mono)' }}
-            >
-              A home for hackathons.
-              
-              We organize flagship events, connect builders
-              with sponsors, and keep a live database of every hackathon worth showing up to.
-            </motion.p>
+              <motion.div
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.3 }}
+                className="mt-10 flex flex-wrap items-center gap-4 sm:mt-14 md:mt-16"
+              >
+                <Link href="/database">
+                  <motion.span
+                    whileHover={{ y: -2, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="inline-flex rounded-full border border-hna-red bg-hna-red px-7 py-3 text-xs uppercase tracking-[0.3em] text-white transition hover:bg-hna-red/90"
+                    style={{ fontFamily: 'var(--font-space-mono)' }}
+                  >
+                    view hackathons
+                  </motion.span>
+                </Link>
+                <Link href="mailto:hackathonscanada@gmail.com">
+                  <motion.span
+                    whileHover={{ y: -2, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="inline-flex rounded-full border border-hna-red/40 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.3em] text-hna-red transition hover:border-hna-red hover:bg-hna-red/5"
+                    style={{ fontFamily: 'var(--font-space-mono)' }}
+                  >
+                    contact
+                  </motion.span>
+                </Link>
+              </motion.div>
+            </div>
 
-            <motion.div
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.3 }}
-              className="mt-10 flex flex-wrap items-center gap-4 sm:mt-14 md:mt-16"
-            >
-              <Link href="/database">
-                <motion.span
-                  whileHover={{ y: -2, scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex rounded-full border border-black bg-black px-7 py-3 text-xs uppercase tracking-[0.3em] text-white"
-                  style={{ fontFamily: 'var(--font-space-mono)' }}
-                >
-                  view hackathons
-                </motion.span>
-              </Link>
-              <Link href="mailto:hackathonscanada@gmail.com">
-                <motion.span
-                  whileHover={{ y: -2, scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex rounded-full border border-black/40 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.3em] text-black"
-                  style={{ fontFamily: 'var(--font-space-mono)' }}
-                >
-                  contact
-                </motion.span>
-              </Link>
-            </motion.div>
+            <div className="hidden min-h-[min(52vw,680px)] lg:block" aria-hidden="true" />
           </div>
 
-          <div className="hidden lg:block" />
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.28 }}
-            className="pointer-events-none absolute inset-0 hidden lg:block"
+            className="relative hidden aspect-square w-full lg:absolute lg:right-0 lg:top-1/2 lg:block lg:aspect-square lg:w-[min(52vw,680px)] lg:max-w-[680px] lg:-translate-y-1/2"
           >
-            {cards.map((card, idx) => {
-              const isActive = activeCard === idx;
-
-              return (
-                <motion.button
-                  key={card.src}
-                  type="button"
-                  data-hero-draggable
-                  drag
-                  dragMomentum
-                  dragConstraints={heroRef}
-                  dragElastic={0.2}
-                  dragTransition={{ power: 0.24, timeConstant: 240, bounceStiffness: 280, bounceDamping: 14 }}
-                  initial={{ opacity: 0, y: 18, rotate: card.rotate }}
-                  whileInView={{ opacity: 1, y: 0, rotate: card.rotate }}
-                  viewport={{ once: true, amount: 0.6 }}
-                  transition={{ duration: 0.6, delay: 0.15 + idx * 0.08 }}
-                  whileHover={{ scale: 1.03 }}
-                  animate={{
-                    scale: isActive ? 1.09 : 1,
-                    zIndex: isActive ? 30 : idx + 1,
-                  }}
-                  onPointerEnter={() => setHeroNativeCursor(true)}
-                  onPointerLeave={() => {
-                    if (!heroCardDraggingRef.current) setHeroNativeCursor(false);
-                  }}
-                  onDragStart={() => {
-                    heroCardDraggingRef.current = true;
-                    setHeroNativeCursor(true);
-                  }}
-                  onDragEnd={(e) => {
-                    heroCardDraggingRef.current = false;
-                    let x = 0;
-                    let y = 0;
-                    if ('changedTouches' in e && e.changedTouches[0]) {
-                      x = e.changedTouches[0].clientX;
-                      y = e.changedTouches[0].clientY;
-                    } else {
-                      const p = e as MouseEvent | PointerEvent;
-                      x = p.clientX;
-                      y = p.clientY;
-                    }
-                    const hit = document.elementFromPoint(x, y);
-                    setHeroNativeCursor(!!hit?.closest('[data-hero-draggable]'));
-                  }}
-                  onClick={() => setActiveCard((prev) => (prev === idx ? null : idx))}
-                  className="pointer-events-auto absolute aspect-4/5 w-[clamp(9.5rem,14vw,13rem)] cursor-grab overflow-hidden rounded-2xl border border-black/15 bg-white/85 shadow-[0_18px_35px_-20px_rgba(0,0,0,0.7)] active:cursor-grabbing"
-                  style={{
-                    top: card.top,
-                    left: card.left,
-                    rotate: `${card.rotate}deg`,
-                  }}
-                >
-                  <Image
-                    src={card.src}
-                    alt={`Hackathon card ${idx + 1}`}
-                    fill
-                    sizes="(max-width: 1024px) 70vw, 24vw"
-                    className="object-cover"
-                    draggable={false}
-                  />
-                </motion.button>
-              );
-            })}
+            <Image
+              src="/hero-scene.png"
+              alt="Inukshuk landscape illustration"
+              fill
+              sizes="(max-width: 1024px) 85vw, 52vw"
+              className="object-contain object-right"
+              priority
+            />
           </motion.div>
         </section>
 
@@ -389,7 +322,7 @@ export default function Home() {
           >
             <AsciiArt
               text={BUTTERFLY_ASCII}
-              color="rgba(0, 0, 0, 0.6)"
+              color="rgba(29, 42, 68, 0.6)"
               animationStyle="fade"
               animationDuration={1.5}
               animateOnView={false}
@@ -403,7 +336,7 @@ export default function Home() {
             <motion.p
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.18 }}
-              className="mb-12 max-w-md text-xs uppercase tracking-[0.32em] text-black/55"
+              className="mb-12 max-w-md text-xs uppercase tracking-[0.32em] text-hna-blue/55"
               style={{ fontFamily: 'var(--font-space-mono)' }}
             >
               We run hackathons and tech events that connects your company with top builders. Spark real ideas, surface raw talent, and ship what actually matters.
@@ -421,13 +354,13 @@ export default function Home() {
               ].map(([value, label]) => (
                 <motion.div key={label} whileHover={{ y: -4 }}>
                   <p
-                    className="text-4xl leading-none tracking-tight sm:text-5xl"
+                    className="text-4xl leading-none tracking-tight text-hna-red sm:text-5xl"
                     style={{ fontFamily: 'var(--font-newsreader)' }}
                   >
                     {value}
                   </p>
                   <p
-                    className="mt-2 text-[11px] uppercase tracking-[0.28em] text-black/60"
+                    className="mt-2 text-[11px] uppercase tracking-[0.28em] text-hna-blue/60"
                     style={{ fontFamily: 'var(--font-space-mono)' }}
                   >
                     {label}
@@ -444,13 +377,13 @@ export default function Home() {
             className="pointer-events-none absolute inset-x-8 -bottom-20 -top-6 -z-10 blur-3xl"
             style={{
               backgroundImage:
-                'radial-gradient(50% 38% at 16% 72%, rgba(61, 145, 255, 0.32), transparent 72%), radial-gradient(44% 34% at 84% 66%, rgba(150, 73, 244, 0.28), transparent 74%), radial-gradient(56% 42% at 50% 94%, rgba(39, 203, 143, 0.2), transparent 78%)',
+                'radial-gradient(50% 38% at 16% 72%, rgba(29, 42, 68, 0.32), transparent 72%), radial-gradient(44% 34% at 84% 66%, rgba(114, 28, 36, 0.28), transparent 74%), radial-gradient(56% 42% at 50% 94%, rgba(45, 74, 34, 0.2), transparent 78%)',
             }}
           />
           <motion.section
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.1 }}
-            className="relative overflow-hidden rounded-[2.3rem] border border-black/10 bg-[#141f31] p-8 text-white shadow-[0_34px_72px_-42px_rgba(8,12,20,0.9)] sm:p-10 lg:p-14"
+            className="relative overflow-hidden rounded-[2.3rem] border border-hna-blue/10 bg-hna-blue p-8 text-white shadow-[0_34px_72px_-42px_rgba(29,42,68,0.9)] sm:p-10 lg:p-14"
           >
             <div
               aria-hidden="true"
@@ -458,28 +391,28 @@ export default function Home() {
               style={{
                 opacity: 0.62,
                 backgroundImage:
-                  'radial-gradient(circle at 18% 22%, rgba(133, 239, 255, 0.34), rgba(61, 145, 255, 0.2) 28%, rgba(20, 31, 49, 0) 62%), radial-gradient(circle at 82% 18%, rgba(150, 73, 244, 0.22), rgba(20, 31, 49, 0) 55%), radial-gradient(circle at 52% 84%, rgba(39, 203, 143, 0.2), rgba(20, 31, 49, 0) 58%)',
+                  'radial-gradient(circle at 18% 22%, rgba(179, 84, 30, 0.34), rgba(29, 42, 68, 0.2) 28%, rgba(29, 42, 68, 0) 62%), radial-gradient(circle at 82% 18%, rgba(114, 28, 36, 0.22), rgba(29, 42, 68, 0) 55%), radial-gradient(circle at 52% 84%, rgba(45, 74, 34, 0.2), rgba(29, 42, 68, 0) 58%)',
               }}
             />
             <div
               className="pointer-events-none absolute -inset-12 -z-10 opacity-65 blur-3xl"
               style={{
                 backgroundImage:
-                  'radial-gradient(circle at 14% 18%, rgba(61, 145, 255, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(150, 73, 244, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(39, 203, 143, 0.2), transparent 44%)',
+                  'radial-gradient(circle at 14% 18%, rgba(29, 42, 68, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(114, 28, 36, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(45, 74, 34, 0.2), transparent 44%)',
               }}
             />
             <div
               className="pointer-events-none absolute inset-0 opacity-75"
               style={{
                 backgroundImage:
-                  'radial-gradient(circle at 14% 18%, rgba(61, 145, 255, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(150, 73, 244, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(39, 203, 143, 0.2), transparent 44%)',
+                  'radial-gradient(circle at 14% 18%, rgba(29, 42, 68, 0.24), transparent 42%), radial-gradient(circle at 82% 15%, rgba(114, 28, 36, 0.22), transparent 36%), radial-gradient(circle at 50% 92%, rgba(45, 74, 34, 0.2), transparent 44%)',
               }}
             />
             <div className="relative z-10">
               <motion.p
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.15 }}
-                className="text-[11px] uppercase tracking-[0.36em] text-white/70"
+                className="text-[11px] uppercase tracking-[0.36em] text-hna-red-light"
                 style={{ fontFamily: 'var(--font-space-mono)' }}
               >
                 sponsors
@@ -526,10 +459,10 @@ export default function Home() {
           transition={{ ...fadeUp.transition, delay: 0.12 }}
           className="relative mx-auto mt-40 max-w-7xl lg:mt-56"
         >
-          <div className="mb-10 flex items-end justify-between gap-6">
+          <div className="mb-10 flex items-end justify-between gap-6 border-b border-hna-blue/10 pb-6">
             <div>
               <p
-                className="text-[11px] uppercase tracking-[0.36em] text-black/60"
+                className="text-[11px] uppercase tracking-[0.36em] text-hna-red"
                 style={{ fontFamily: 'var(--font-space-mono)' }}
               >
                 past events
@@ -543,32 +476,29 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
             {pastEvents.map((event, idx) => (
               <Link
                 key={event.name}
                 href={event.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block"
+                className="group block h-full"
               >
                 <motion.article
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.3 }}
                   transition={{ duration: 0.6, delay: idx * 0.08 }}
-                  whileHover={{ y: -6 }}
-                  className={`relative h-full overflow-hidden rounded-3xl border border-black/15 bg-white shadow-[0_20px_45px_-30px_rgba(0,0,0,0.5)] ${
-                    idx === 1 ? 'md:-translate-y-8' : idx === 2 ? 'md:translate-y-6' : ''
-                  }`}
+                  className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-hna-blue/10 bg-white shadow-[0_18px_48px_-28px_rgba(29,42,68,0.4)] transition duration-300 hover:-translate-y-1.5 hover:border-hna-red/30 hover:shadow-[0_32px_64px_-24px_rgba(114,28,36,0.22)]"
                 >
-                  <div className="relative aspect-4/3 overflow-hidden">
+                  <div className="relative aspect-video overflow-hidden bg-hna-blue">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={`${event.name}-${eventPhotoIndexes[idx]}`}
-                        initial={{ opacity: 0, scale: 1.03, y: 8 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.985, y: -6 }}
+                        initial={{ opacity: 0, scale: 1.03 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.985 }}
                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                         className="absolute inset-0"
                       >
@@ -577,39 +507,55 @@ export default function Home() {
                           alt={`${event.name} event photo`}
                           fill
                           sizes="(max-width: 768px) 100vw, 33vw"
-                          className="object-cover"
+                          className="object-cover transition duration-500 group-hover:scale-105"
                         />
                       </motion.div>
                     </AnimatePresence>
-                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <div className="inline-flex rounded-full border border-white/35 bg-black/40 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur-sm">
-                        {event.city}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-3 p-6">
-                    <div className="flex items-center gap-3">
+                    <div className="absolute inset-0 bg-linear-to-t from-hna-blue/80 via-hna-blue/25 to-hna-blue/5" />
+                    <span
+                      className="absolute left-4 top-4 rounded-full border border-hna-blue/20 bg-hna-blue/10 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-hna-blue/70 backdrop-blur-sm"
+                      style={{ fontFamily: 'var(--font-space-mono)' }}
+                    >
+                      past
+                    </span>
+                    <div className="absolute bottom-4 left-4 right-4 flex items-end gap-3">
                       <Image
                         src={event.logo}
                         alt={`${event.name} logo`}
-                        width={36}
-                        height={36}
-                        className="h-9 w-9 object-contain"
+                        width={44}
+                        height={44}
+                        className="h-11 w-11 shrink-0 rounded-xl border border-white/25 bg-white/90 object-contain p-1 shadow-md"
                       />
                       <h3
-                        className="text-2xl leading-tight tracking-tight"
+                        className="text-xl leading-tight tracking-tight text-white sm:text-2xl"
                         style={{ fontFamily: 'var(--font-newsreader)' }}
                       >
                         {event.name}
                       </h3>
                     </div>
+                  </div>
+
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-center gap-2 text-sm text-hna-blue/75">
+                      <MapPin className="h-4 w-4 shrink-0 text-hna-red/70" />
+                      <span>{event.city}</span>
+                    </div>
                     <p
-                      className="text-[11px] uppercase tracking-[0.28em] text-black/55"
+                      className="mt-3 text-[11px] uppercase tracking-[0.24em] text-hna-red"
                       style={{ fontFamily: 'var(--font-space-mono)' }}
                     >
                       {event.highlight}
                     </p>
+
+                    <div className="mt-5 flex items-center justify-end border-t border-hna-blue/8 pt-5">
+                      <span
+                        className="inline-flex items-center gap-1.5 rounded-full bg-hna-blue px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-white transition group-hover:bg-hna-red"
+                        style={{ fontFamily: 'var(--font-space-mono)' }}
+                      >
+                        visit
+                        <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                      </span>
+                    </div>
                   </div>
                 </motion.article>
               </Link>
@@ -675,7 +621,7 @@ export default function Home() {
               <motion.span
                 whileHover={{ y: -2, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="inline-flex rounded-full border border-black/40 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.3em] text-black"
+                className="inline-flex rounded-full border border-hna-red/40 bg-transparent px-7 py-3 text-xs uppercase tracking-[0.3em] text-hna-red transition hover:border-hna-red hover:bg-hna-red/5"
                 style={{ fontFamily: 'var(--font-space-mono)' }}
               >
                 contact
@@ -690,7 +636,7 @@ export default function Home() {
           >
             <AsciiArt
               text={MAPLE_LEAF_ASCII}
-              color="rgba(0, 0, 0, 0.42)"
+              color="rgba(114, 28, 36, 0.5)"
               animationStyle="fade"
               animationDuration={1.2}
               animateOnView={false}
@@ -708,7 +654,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Join us on Discord"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
             >
               <DiscordIcon className="h-4.5 w-4.5" />
             </Link>
@@ -717,7 +663,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Follow us on LinkedIn"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
             >
               <Linkedin className="h-4.5 w-4.5" />
             </Link>
@@ -726,25 +672,25 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Follow us on Instagram"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
             >
               <Instagram className="h-4.5 w-4.5" />
             </Link>
             <Link
               href="mailto:hackathonscanada@gmail.com"
-              aria-label="Email Hackathons Canada"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-black/20 text-black transition hover:-translate-y-0.5 hover:border-black/45"
+              aria-label="Email Hackathons North America"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-hna-blue/20 text-hna-blue transition hover:-translate-y-0.5 hover:border-hna-blue/45"
             >
               <Mail className="h-4.5 w-4.5" />
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            <Image src="/favicon.ico" alt="Hackathons Canada logo" width={28} height={32} className="h-8 w-auto" />
+            <Image src="/favicon.ico" alt="HNA logo" width={28} height={32} className="h-8 w-auto" />
             <p
-              className="text-sm uppercase tracking-[0.28em] text-black/70 sm:text-base"
+              className="text-sm uppercase tracking-[0.28em] text-hna-blue/70 sm:text-base"
               style={{ fontFamily: 'var(--font-space-mono)' }}
             >
-              hackathons canada
+              HNA
             </p>
           </div>
         </footer>

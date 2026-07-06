@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
-import { Download, ExternalLink, MapPin, Search, SlidersHorizontal } from 'lucide-react';
+import { ArrowRight, Download, MapPin, Search } from 'lucide-react';
 import type { HackathonRecord } from '@/lib/hackathons';
 import { AddCalendarDropdown } from '@/components/AddCalendarDropdown';
 import { AsciiArt } from "@/components/ui/ascii-art";
@@ -67,34 +67,36 @@ function sourceLabel(source?: string): string {
   return source?.trim() || 'community';
 }
 
+function statusBadgeClass(state: Exclude<DateFilter, 'all'>): string {
+  switch (state) {
+    case 'upcoming':
+      return 'border-hna-green/30 bg-hna-green/15 text-hna-green';
+    case 'ongoing':
+      return 'border-hna-warmth/35 bg-hna-warmth/15 text-hna-warmth';
+    case 'past':
+      return 'border-hna-blue/20 bg-hna-blue/10 text-hna-blue/60';
+  }
+}
+
 function eventToneClass(event: HackathonRecord, index: number): string {
   const marker = `${event.name} ${sourceLabel(event.source)}`.toLowerCase();
   const brandTones: Array<{ key: string; tone: string }> = [
-    { key: 'google', tone: 'from-[#e8f0fe] via-[#fff7eb] to-[#eaf7ee]' },
-    { key: 'microsoft', tone: 'from-[#eef7ff] via-[#f5f3ff] to-[#fff4ed]' },
-    { key: 'github', tone: 'from-[#eef1f6] via-[#f6f7fb] to-[#f0f3fb]' },
-    { key: 'hack canada', tone: 'from-[#f3ecff] via-[#fff1f4] to-[#eef5ff]' },
-    { key: 'stan', tone: 'from-[#efe9ff] via-[#f6f2ff] to-[#fff3ef]' },
+    { key: 'google', tone: 'from-[#f4ebd9] via-[#faf4ea] to-[#edf2ea]' },
+    { key: 'microsoft', tone: 'from-[#e8edf5] via-[#f4ebd9] to-[#f5ebe3]' },
+    { key: 'github', tone: 'from-[#ede8e3] via-[#f4ebd9] to-[#e8edf5]' },
+    { key: 'hack canada', tone: 'from-[#f5e8ea] via-[#f4ebd9] to-[#eaeef5]' },
+    { key: 'stan', tone: 'from-[#f0ebe3] via-[#f4ebd9] to-[#edf2ea]' },
   ];
   const matchedTone = brandTones.find(({ key }) => marker.includes(key));
   if (matchedTone) return matchedTone.tone;
 
   const defaultTones = [
-    'from-[#f8efe5] via-[#fffaf4] to-white',
-    'from-[#eaf3ff] via-[#f3f8ff] to-white',
-    'from-[#f0efe8] via-[#f7f5ef] to-white',
-    'from-[#f4ebff] via-[#faf4ff] to-white',
+    'from-[#f4ebd9] via-[#faf4ea] to-white',
+    'from-[#e8edf5] via-[#f3f0e8] to-white',
+    'from-[#f0ebe3] via-[#f8f2e8] to-white',
+    'from-[#edf2ea] via-[#f4ebd9] to-white',
   ];
   return defaultTones[index % defaultTones.length];
-}
-
-function cardFrameClass(index: number): string {
-  const variants = [
-    '[clip-path:polygon(0%_0%,95%_0%,100%_10%,100%_100%,7%_100%,0%_90%)]',
-    '[clip-path:polygon(4%_0%,100%_0%,100%_88%,96%_100%,0%_100%,0%_12%)]',
-    '[clip-path:polygon(0%_0%,93%_0%,100%_12%,100%_100%,0%_100%,0%_8%)]',
-  ];
-  return variants[index % variants.length];
 }
 
 function hasActiveFilters(query: string, dateFilter: DateFilter, formatFilter: FormatFilter, sourceFilter: string) {
@@ -154,31 +156,31 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
   const canSeeMore = visibleCount < filtered.length;
 
   return (
-    <div className="min-h-screen bg-[#f4f2ef] text-[#171717] overflow-x-hidden">
+    <div className="min-h-screen bg-hna-neutral text-hna-blue overflow-x-hidden">
       <main className="mx-auto max-w-7xl px-6 pb-20 pt-16 sm:px-10 md:px-16 lg:px-24 lg:pt-20">
         <div className="flex flex-wrap items-end justify-between gap-6">
   <div className="relative w-full">
     <div className="flex flex-col gap-2">
       <Link
         href="/"
-        className="flex items-center gap-2 text-xs uppercase tracking-[0.45em] text-black/55"
+        className="flex items-center gap-2 text-xs uppercase tracking-[0.45em] text-hna-blue/55"
         style={{ fontFamily: 'var(--font-space-mono)' }}
       >
-        <Image src="/favicon.ico" alt="Hackathons Canada logo" width={16} height={16} className="h-8 w-8" />
-        hackathons canada
+        <Image src="/favicon.ico" alt="HNA logo" width={16} height={16} className="h-8 w-8" />
+        HNA
       </Link>
       <div className="relative flex items-end">
         <h1
           className="max-w-3xl text-4xl leading-tight tracking-tight sm:text-5xl lg:text-6xl"
           style={{ fontFamily: 'var(--font-newsreader)' }}
         >
-          discover your next build weekend.
+          discover your next <span className="text-hna-red">build weekend.</span>
         </h1>
         <div className="absolute right-0 -translate-x-1/3 translate-y-1/3 pointer-events-none">
           <AsciiArt
             src="https://i.imgur.com/NviPNAY.jpeg"
             resolution={100}
-            color="#000000"
+            color="#1d2a44"
             animationStyle="none"
             invert={true}
             className="aspect-square w-40 sm:w-52 lg:w-64 bg-transparent opacity-40 mix-blend-multiply"
@@ -189,25 +191,25 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
   </div>
 </div>
 
-        <section className="mt-10 border border-black/10 bg-white/70 p-4 shadow-[0_24px_60px_-42px_rgba(0,0,0,0.6)] sm:p-6">
+        <section className="mt-10 border border-hna-blue/10 bg-white/70 p-4 shadow-[0_24px_60px_-42px_rgba(29,42,68,0.6)] sm:p-6">
           <div className="grid gap-6 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start">
             {!loadError && (
-              <aside className="border border-black/10 bg-[#faf8f5] p-4 lg:sticky lg:top-6">
+              <aside className="border border-hna-blue/10 border-l-4 border-l-hna-red bg-hna-neutral-soft p-4 lg:sticky lg:top-6">
 
-                <label className="mt-3 flex items-center gap-2 border border-black/10 bg-white px-3 py-2.5">
-                  <Search className="h-4 w-4 text-black/50" />
+                <label className="mt-3 flex items-center gap-2 border border-hna-blue/10 bg-white px-3 py-2.5">
+                  <Search className="h-4 w-4 text-hna-blue/50" />
                   <input
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Search events..."
-                    className="w-full bg-transparent text-sm text-black outline-none placeholder:text-black/45"
+                    className="w-full bg-transparent text-sm text-hna-blue outline-none placeholder:text-hna-blue/45"
                     style={{ fontFamily: 'var(--font-space-mono)' }}
                   />
                 </label>
 
-                <div className="mt-3 border border-black/10 bg-white px-3 py-2.5">
+                <div className="mt-3 border border-hna-blue/10 bg-white px-3 py-2.5">
                   <p
-                    className="mb-2 text-[10px] uppercase tracking-[0.22em] text-black/55"
+                    className="mb-2 text-[10px] uppercase tracking-[0.22em] text-hna-blue/55"
                     style={{ fontFamily: 'var(--font-space-mono)' }}
                   >
                     source
@@ -215,7 +217,7 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
                   <select
                     value={sourceFilter}
                     onChange={(event) => setSourceFilter(event.target.value)}
-                    className="w-full bg-transparent text-sm text-black outline-none"
+                    className="w-full bg-transparent text-sm text-hna-blue outline-none"
                     style={{ fontFamily: 'var(--font-space-mono)' }}
                   >
                     {sources.map((source) => (
@@ -226,9 +228,9 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
                   </select>
                 </div>
 
-                <div className="mt-3 border border-black/10 bg-white p-3">
+                <div className="mt-3 border border-hna-blue/10 bg-white p-3">
                   <p
-                    className="mb-2 text-[10px] uppercase tracking-[0.22em] text-black/55"
+                    className="mb-2 text-[10px] uppercase tracking-[0.22em] text-hna-blue/55"
                     style={{ fontFamily: 'var(--font-space-mono)' }}
                   >
                     timeline
@@ -241,8 +243,8 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
                         onClick={() => setDateFilter(value)}
                         className={`border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition ${
                           dateFilter === value
-                            ? 'border-black bg-black text-white'
-                            : 'border-black/20 bg-white text-black/70 hover:border-black/40'
+                            ? 'border-hna-red bg-hna-red text-white'
+                            : 'border-hna-blue/20 bg-white text-hna-blue/70 hover:border-hna-blue/40'
                         }`}
                         style={{ fontFamily: 'var(--font-space-mono)' }}
                       >
@@ -252,9 +254,9 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
                   </div>
                 </div>
 
-                <div className="mt-3 border border-black/10 bg-white p-3">
+                <div className="mt-3 border border-hna-blue/10 bg-white p-3">
                   <p
-                    className="mb-2 text-[10px] uppercase tracking-[0.22em] text-black/55"
+                    className="mb-2 text-[10px] uppercase tracking-[0.22em] text-hna-blue/55"
                     style={{ fontFamily: 'var(--font-space-mono)' }}
                   >
                     format
@@ -267,8 +269,8 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
                         onClick={() => setFormatFilter(value)}
                         className={`border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition ${
                           formatFilter === value
-                            ? 'border-black bg-black text-white'
-                            : 'border-black/20 bg-white text-black/70 hover:border-black/40'
+                            ? 'border-hna-red bg-hna-red text-white'
+                            : 'border-hna-blue/20 bg-white text-hna-blue/70 hover:border-hna-blue/40'
                         }`}
                         style={{ fontFamily: 'var(--font-space-mono)' }}
                       >
@@ -287,7 +289,7 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
                       setFormatFilter('all');
                       setSourceFilter('all');
                     }}
-                    className="mt-3 w-full border border-black/20 bg-white px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-black/70 transition hover:border-black/45"
+                    className="mt-3 w-full border border-hna-blue/20 bg-white px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-hna-blue/70 transition hover:border-hna-blue/45"
                     style={{ fontFamily: 'var(--font-space-mono)' }}
                   >
                     clear filters
@@ -296,7 +298,7 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
 
                 <a
                   href="/api/calendar"
-                  className="mt-4 inline-flex w-full items-center justify-center gap-2 border border-black bg-black px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] text-white transition hover:-translate-y-0.5"
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 border border-hna-red bg-hna-red px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] text-white transition hover:-translate-y-0.5 hover:bg-hna-red/90"
                   style={{ fontFamily: 'var(--font-space-mono)' }}
                 >
                   <Download className="h-4 w-4" />
@@ -306,118 +308,143 @@ export function DatabaseExplorer({ events, loadError }: DatabaseExplorerProps) {
             )}
 
             <div>
-              <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+              <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-hna-blue/10 pb-6">
+                <div>
+                  <p
+                    className="text-[11px] uppercase tracking-[0.36em] text-hna-red"
+                    style={{ fontFamily: 'var(--font-space-mono)' }}
+                  >
+                    live database
+                  </p>
+                  <h2
+                    className="mt-2 text-3xl leading-tight tracking-tight sm:text-4xl"
+                    style={{ fontFamily: 'var(--font-newsreader)' }}
+                  >
+                    {filtered.length} hackathon{filtered.length === 1 ? '' : 's'}
+                  </h2>
+                </div>
                 <p
-                  className="text-[11px] uppercase tracking-[0.3em] text-black/60"
+                  className="text-[10px] uppercase tracking-[0.22em] text-hna-blue/50"
                   style={{ fontFamily: 'var(--font-space-mono)' }}
                 >
-                  {filtered.length} of {events.length} hackathons
+                  {events.length} total in north america
                 </p>
               </div>
 
               {loadError && <div className="border border-red-200 bg-red-50 p-6 text-sm text-red-700">{loadError}</div>}
 
               {!loadError && events.length === 0 && (
-                <div className="mt-4 border border-black/10 bg-[#f8f6f3] p-8 text-center text-black/65">
+                <div className="mt-4 border border-hna-blue/10 bg-hna-neutral-muted p-8 text-center text-hna-blue/65">
                   No hackathons found in the database yet.
                 </div>
               )}
 
               {!loadError && events.length > 0 && filtered.length === 0 && (
-                <div className="mt-4 border border-black/10 bg-[#f8f6f3] p-8 text-center text-black/65">
+                <div className="mt-4 border border-hna-blue/10 bg-hna-neutral-muted p-8 text-center text-hna-blue/65">
                   No results with the current search and filters. Try clearing one filter.
                 </div>
               )}
 
               {!loadError && filtered.length > 0 && (
-                <div className="mt-6 space-y-8">
-                  <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                    {visibleHackathons.map((event, index) => (
+                <div className="mt-6 space-y-10">
+                  <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+                    {visibleHackathons.map((event, index) => {
+                      const dateState = getDateState(event);
+                      const formatState = getFormatState(event);
+
+                      return (
                     <article
                       key={event.event_key}
-                      className={`group relative overflow-hidden border border-black/10 bg-linear-to-br ${eventToneClass(event, index)} ${cardFrameClass(index)} p-6 shadow-[0_20px_45px_-30px_rgba(0,0,0,0.55)] transition hover:-translate-y-1.5`}
+                      className="group relative flex flex-col overflow-hidden rounded-3xl border border-hna-blue/10 bg-white shadow-[0_18px_48px_-28px_rgba(29,42,68,0.4)] transition duration-300 hover:-translate-y-1.5 hover:border-hna-red/30 hover:shadow-[0_32px_64px_-24px_rgba(114,28,36,0.22)]"
                     >
-                      <div className="absolute -left-8 -top-8 h-20 w-20 rounded-full bg-white/45 blur-xl" />
-                      <div className="absolute -bottom-10 right-2 h-20 w-20 rounded-full bg-black/5 blur-xl" />
-                      <div className="absolute right-4 top-4 h-6 w-6 border-r-2 border-t-2 border-black/20" />
-                      <div className="relative flex flex-col gap-3">
-                        <div className="flex min-w-0 items-start gap-3">
+                      <div className="relative aspect-video overflow-hidden bg-hna-blue">
+                        {event.bgimage ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={event.bgimage}
+                            alt=""
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className={`h-full w-full bg-linear-to-br ${eventToneClass(event, index)}`} />
+                        )}
+                        <div className="absolute inset-0 bg-linear-to-t from-hna-blue/80 via-hna-blue/25 to-hna-blue/5" />
+                        <span
+                          className={`absolute left-4 top-4 rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.2em] backdrop-blur-sm ${statusBadgeClass(dateState)}`}
+                          style={{ fontFamily: 'var(--font-space-mono)' }}
+                        >
+                          {dateState}
+                        </span>
+                        <div className="absolute bottom-4 left-4 right-4 flex items-end gap-3">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={fallbackImage(event)}
                             alt={`${event.name} logo`}
-                            className="h-12 w-12 border border-black/10 bg-[#f4f2ef] object-cover"
+                            className="h-11 w-11 shrink-0 rounded-xl border border-white/25 bg-white/90 object-cover shadow-md"
                           />
-                          <div className="min-w-0">
-                            <h2
-                              className="text-2xl leading-tight tracking-tight wrap-break-word"
-                              style={{ fontFamily: 'var(--font-newsreader)' }}
-                            >
-                              {event.name}
-                            </h2>
-                            <p
-                              className="mt-1 text-[10px] uppercase tracking-[0.24em] text-black/55"
+                          <h2
+                            className="text-xl leading-tight tracking-tight text-white sm:text-2xl"
+                            style={{ fontFamily: 'var(--font-newsreader)' }}
+                          >
+                            {event.name}
+                          </h2>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-1 flex-col p-5">
+                        <p
+                          className="text-[11px] uppercase tracking-[0.24em] text-hna-red"
+                          style={{ fontFamily: 'var(--font-space-mono)' }}
+                        >
+                          {formatDateRange(event.startdate, event.enddate)}
+                        </p>
+
+                        <div className="mt-3 flex items-center gap-2 text-sm text-hna-blue/75">
+                          <MapPin className="h-4 w-4 shrink-0 text-hna-red/70" />
+                          <span className="truncate">{event.location || 'Location TBA'}</span>
+                        </div>
+
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <span
+                            className="rounded-full bg-hna-neutral px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-hna-blue/70"
+                            style={{ fontFamily: 'var(--font-space-mono)' }}
+                          >
+                            {formatState}
+                          </span>
+                          <span
+                            className="rounded-full bg-hna-neutral px-3 py-1 text-[10px] uppercase tracking-[0.18em] text-hna-blue/70"
+                            style={{ fontFamily: 'var(--font-space-mono)' }}
+                          >
+                            {sourceLabel(event.source)}
+                          </span>
+                        </div>
+
+                        <div className="mt-5 flex items-center justify-between gap-3 border-t border-hna-blue/8 pt-5">
+                          <AddCalendarDropdown event={event} />
+                          {event.url ? (
+                            <Link
+                              href={event.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 rounded-full bg-hna-blue px-4 py-2 text-[10px] uppercase tracking-[0.2em] text-white transition group-hover:bg-hna-red"
                               style={{ fontFamily: 'var(--font-space-mono)' }}
                             >
-                              {sourceLabel(event.source)}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="self-start">
-                          <AddCalendarDropdown event={event} />
+                              visit
+                              <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" />
+                            </Link>
+                          ) : null}
                         </div>
                       </div>
-
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <span
-                          className="border border-black/20 bg-white/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-black/70"
-                          style={{ fontFamily: 'var(--font-space-mono)' }}
-                        >
-                          {getDateState(event)}
-                        </span>
-                        <span
-                          className="border border-black/20 bg-white/80 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-black/70"
-                          style={{ fontFamily: 'var(--font-space-mono)' }}
-                        >
-                          {getFormatState(event)}
-                        </span>
-                      </div>
-
-                      <p
-                        className="mt-4 text-[11px] uppercase tracking-[0.24em] text-black/60"
-                        style={{ fontFamily: 'var(--font-space-mono)' }}
-                      >
-                        {formatDateRange(event.startdate, event.enddate)}
-                      </p>
-
-                      <div className="mt-2 flex items-center gap-2 text-sm text-black/75">
-                        <MapPin className="h-4 w-4 shrink-0" />
-                        <span className="truncate">{event.location || 'Location TBA'}</span>
-                      </div>
-
-                      <div className="mt-2 text-sm text-black/75">{event.hybridinfo || 'Format TBA'}</div>
-
-                      {event.url ? (
-                        <Link
-                          href={event.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-4 inline-flex items-center gap-1 border border-black/20 bg-white/75 px-4 py-2 text-[10px] uppercase tracking-[0.22em] transition hover:border-black"
-                          style={{ fontFamily: 'var(--font-space-mono)' }}
-                        >
-                          Visit Event
-                          <ExternalLink className="h-3.5 w-3.5" />
-                        </Link>
-                      ) : null}
                     </article>
-                    ))}
+                      );
+                    })}
                   </div>
                   {canSeeMore ? (
                     <div className="flex justify-center">
                       <button
                         type="button"
                         onClick={() => setVisibleCount((c) => c + HACKATHONS_PAGE_SIZE)}
-                        className="border border-black/25 bg-white px-8 py-3 text-[10px] uppercase tracking-[0.28em] text-black/80 transition hover:border-black hover:bg-black hover:text-white"
+                        className="border border-hna-red/25 bg-white px-8 py-3 text-[10px] uppercase tracking-[0.28em] text-hna-red/80 transition hover:border-hna-red hover:bg-hna-red hover:text-white"
                         style={{ fontFamily: 'var(--font-space-mono)' }}
                       >
                         See more
